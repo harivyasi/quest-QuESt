@@ -1,0 +1,12 @@
+numpy
+scipy
+matplotlib
+jupyter-book
+qiskit
+qiskit-nature
+pyscf
+geometric
+pyberny
+ipywidgets
+ipython_blocking
+ghp-import

@@ -1,0 +1,8 @@
+# Table of content
+# Learn more at https://jupyterbook.org/customize/toc.html
+#
+- file: intro
+- file: executables
+  sections:
+    - file: executables/empty_notebook
+    - file: executables/main_notebook
