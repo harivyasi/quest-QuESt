@@ -6,3 +6,4 @@
   sections:
     - file: executables/empty_notebook
     - file: executables/main_notebook
+- file: README
