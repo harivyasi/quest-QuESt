@@ -4,7 +4,5 @@
 - file: intro
 - file: executables
   sections:
-    - file: executables/get_molecule
-    - file: executables/calculate_molecule
     - file: executables/main_notebook
 - file: README
