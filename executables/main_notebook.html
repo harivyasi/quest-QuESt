@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>This notebook exists as a placeholder. To be eventually overwritten. &#8212; Q³ Qiskit QuESt Qalculator</title>
+    <title>Welcome to Q³ calculator &#8212; Q³ Qiskit QuESt Qalculator</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -52,7 +52,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="QuESt" href="../README.html" />
-    <link rel="prev" title="Calculate Molecule" href="calculate_molecule.html" />
+    <link rel="prev" title="Run a QuESt calculation" href="../executables.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -100,19 +100,9 @@
    </i>
   </label>
   <ul class="current">
-   <li class="toctree-l2">
-    <a class="reference internal" href="get_molecule.html">
-     Get Molecule
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="calculate_molecule.html">
-     Calculate Molecule
-    </a>
-   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     This notebook exists as a placeholder. To be eventually overwritten.
+     Welcome to Q³ calculator
     </a>
    </li>
   </ul>
@@ -231,19 +221,317 @@
         
               <div>
                 
-  <div class="section" id="this-notebook-exists-as-a-placeholder-to-be-eventually-overwritten">
-<h1>This notebook exists as a placeholder. To be eventually overwritten.<a class="headerlink" href="#this-notebook-exists-as-a-placeholder-to-be-eventually-overwritten" title="Permalink to this headline">¶</a></h1>
-<div class="cell docutils container">
+  <div class="section" id="welcome-to-q3-calculator">
+<script>initThebeSBT()</script>
+<h1>Welcome to Q³ calculator<a class="headerlink" href="#welcome-to-q3-calculator" title="Permalink to this headline">¶</a></h1>
+<div class="cell tag_hide-input tag_thebe-init docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CODE BEGINS</span>
+
+<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+<span class="kn">import</span> <span class="nn">pyscf</span><span class="o">,</span> <span class="nn">qiskit</span><span class="o">,</span> <span class="nn">qiskit_nature</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">pyscf.geomopt.geometric_solver</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">geomoptimize</span>
+<span class="kn">from</span> <span class="nn">pyscf.geomopt.berny_solver</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">bernyoptimize</span>
+<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+
+<span class="c1"># Setting some defaults</span>
+<span class="n">molecule_file</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># input file to look for</span>
+<span class="n">default_selection_width</span> <span class="o">=</span> <span class="s2">&quot;60%&quot;</span>
+<span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;description_width&#39;</span><span class="p">:</span> <span class="s1">&#39;initial&#39;</span><span class="p">}</span>
+<span class="n">hbegin</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span><span class="o">+</span><span class="s2">&quot;h2&quot;</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span> <span class="c1"># using &#39;+&#39; to avoid HTML look in an unrendered ipynb</span>
+<span class="n">hend</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span><span class="o">+</span><span class="s2">&quot;/h2&quot;</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
+
+<span class="c1"># Some geometries</span>
+
+<span class="n">stored_geometries</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Hydrogen&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="mf">0.76</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">]],</span>
+                     <span class="s2">&quot;Water&quot;</span><span class="p">:</span>    <span class="p">[[</span><span class="s1">&#39;O&#39;</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">,</span>  <span class="mf">0.00</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="mf">0.28</span><span class="p">,</span>  <span class="mf">0.89</span><span class="p">,</span>  <span class="mf">0.25</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="mf">0.61</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.24</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.72</span><span class="p">]],</span>
+                     <span class="s2">&quot;Ethene&quot;</span><span class="p">:</span>   <span class="p">[[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6672</span><span class="p">,</span>  <span class="mf">0.0000</span><span class="p">,</span>  <span class="mf">0.0000</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span>  <span class="mf">0.6672</span><span class="p">,</span>  <span class="mf">0.0000</span><span class="p">,</span>  <span class="mf">0.0000</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2213</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9290</span><span class="p">,</span>  <span class="mf">0.0708</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2212</span><span class="p">,</span>  <span class="mf">0.9290</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0708</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="mf">1.2213</span><span class="p">,</span>  <span class="mf">0.9290</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0708</span><span class="p">],</span>
+                                  <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="mf">1.2213</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9290</span><span class="p">,</span>  <span class="mf">0.0708</span><span class="p">]]</span>
+                    <span class="p">}</span>
+<span class="n">default_geometry</span> <span class="o">=</span> <span class="s2">&quot;Hydrogen&quot;</span>
+
+<span class="c1"># Some convergence parameters</span>
+
+<span class="k">global</span> <span class="n">conv_params</span> <span class="c1"># this dictionary is later stripped down to hold only the chosen parameters</span>
+<span class="n">conv_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="c1"># These are the default settings</span>
+    <span class="s1">&#39;convergence_energy&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>  <span class="c1"># Eh</span>
+    <span class="s1">&#39;convergence_grms&#39;</span><span class="p">:</span> <span class="mf">3e-4</span><span class="p">,</span>    <span class="c1"># Eh/Bohr</span>
+    <span class="s1">&#39;convergence_gmax&#39;</span><span class="p">:</span> <span class="mf">4.5e-4</span><span class="p">,</span>  <span class="c1"># Eh/Bohr</span>
+    <span class="s1">&#39;convergence_drms&#39;</span><span class="p">:</span> <span class="mf">1.2e-3</span><span class="p">,</span>  <span class="c1"># Angstrom</span>
+    <span class="s1">&#39;convergence_dmax&#39;</span><span class="p">:</span> <span class="mf">1.8e-3</span><span class="p">,</span>  <span class="c1"># Angstrom</span>
+<span class="p">},</span>               <span class="s2">&quot;tight&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;convergence_energy&#39;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">,</span>  <span class="c1"># Eh</span>
+    <span class="s1">&#39;convergence_grms&#39;</span><span class="p">:</span> <span class="mf">2e-4</span><span class="p">,</span>    <span class="c1"># Eh/Bohr</span>
+    <span class="s1">&#39;convergence_gmax&#39;</span><span class="p">:</span> <span class="mf">2.5e-4</span><span class="p">,</span>  <span class="c1"># Eh/Bohr</span>
+    <span class="s1">&#39;convergence_drms&#39;</span><span class="p">:</span> <span class="mf">0.5e-3</span><span class="p">,</span>  <span class="c1"># Angstrom</span>
+    <span class="s1">&#39;convergence_dmax&#39;</span><span class="p">:</span> <span class="mf">0.5e-3</span><span class="p">,</span>  <span class="c1"># Angstrom</span>
+<span class="p">},</span>              <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;convergence_energy&#39;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">,</span>  <span class="c1"># Eh</span>
+    <span class="s1">&#39;convergence_grms&#39;</span><span class="p">:</span> <span class="mf">2e-4</span><span class="p">,</span>    <span class="c1"># Eh/Bohr</span>
+    <span class="s1">&#39;convergence_gmax&#39;</span><span class="p">:</span> <span class="mf">2.5e-4</span><span class="p">,</span>  <span class="c1"># Eh/Bohr</span>
+    <span class="s1">&#39;convergence_drms&#39;</span><span class="p">:</span> <span class="mf">0.5e-3</span><span class="p">,</span>  <span class="c1"># Angstrom</span>
+    <span class="s1">&#39;convergence_dmax&#39;</span><span class="p">:</span> <span class="mf">0.5e-3</span><span class="p">,</span>  <span class="c1"># Angstrom</span>
+<span class="p">}}</span> 
+
+<span class="c1"># Setup a molecule</span>
+<span class="k">global</span> <span class="n">mol</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">stored_geometries</span><span class="p">[</span><span class="n">default_geometry</span><span class="p">]</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Starting with UI</span>
+<span class="c1"># All widgets logic</span>
+<span class="c1"># For step 1</span>
+<span class="n">titlebar</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;Qiskit QuESt Calculator&quot;</span><span class="o">+</span><span class="n">hend</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">))</span>
+
+<span class="n">subtitle1</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">+</span><span class="s2">&quot;Select a molecule&quot;</span><span class="o">+</span><span class="n">hend</span><span class="p">)</span>
+
+<span class="n">file_picker</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stored_geometries</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">+</span><span class="p">[</span><span class="s1">&#39;Upload own file&#39;</span><span class="p">],</span>
+                               <span class="n">value</span> <span class="o">=</span> <span class="n">default_geometry</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pick a molecule&quot;</span><span class="p">,</span>
+                               <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">file_upload</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FileUpload</span><span class="p">(</span><span class="n">accept</span><span class="o">=</span><span class="s1">&#39;.xyz,.mol&#39;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Select File&quot;</span><span class="p">,</span>
+                                 <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">file_box</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">file_picker</span><span class="p">,</span> <span class="n">file_upload</span><span class="p">],</span>
+                        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">confirm_file_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use &quot;</span><span class="o">+</span><span class="n">default_geometry</span><span class="o">+</span><span class="s2">&quot; molecule&quot;</span><span class="p">,</span>
+                                     <span class="n">disabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="c1"># For Step 2</span>
+<span class="n">subtitle2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">+</span><span class="s2">&quot;Do Classical Calculation&quot;</span><span class="o">+</span><span class="n">hend</span><span class="p">)</span>
+
+<span class="n">select_basis</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sto-3g&#39;</span><span class="p">,</span> <span class="s1">&#39;sto-6g&#39;</span><span class="p">,</span> <span class="s1">&#39;cc_pVTZ&#39;</span><span class="p">,</span> <span class="s1">&#39;def2-tzvp&#39;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Basis set for the atoms&quot;</span><span class="p">,</span>
+                                <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">select_spin</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;spin 0 / multiplicity singlet&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                                        <span class="p">(</span><span class="s2">&quot;spin 1 / multiplicity doublet&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                                        <span class="p">(</span><span class="s2">&quot;spin 2 / multiplicity triplet&quot;</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Spin (number of unparied electrons)&quot;</span><span class="p">,</span>
+                               <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">select_symmetry</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="kc">False</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Make use of Point Group Symmetry&quot;</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">select_charge</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">SelectionSlider</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Charge on the molecule&quot;</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+
+
+<span class="n">select_method</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Hartree-Fock (HF)&#39;</span><span class="p">,</span> <span class="s1">&#39;HF&#39;</span><span class="p">),(</span><span class="s1">&#39;Kohn-Sham (KS)&#39;</span><span class="p">,</span><span class="s1">&#39;KS&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;HF&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Method&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                                 <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">select_geooptimizer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;geomeTRIC&#39;</span><span class="p">,</span><span class="s1">&#39;geometric&#39;</span><span class="p">),(</span><span class="s1">&#39;PyBerny&#39;</span><span class="p">,</span> <span class="s1">&#39;pyberny&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;geometric&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Geometry Optimizer&quot;</span><span class="p">,</span>
+                                       <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">criteria_description</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;convergence_energy&#39;</span><span class="p">:</span><span class="s2">&quot;Energy (hartree)&quot;</span><span class="p">,</span>
+                        <span class="s1">&#39;convergence_grms&#39;</span><span class="p">:</span> <span class="s2">&quot; XYZABC (hartree/bohr)&quot;</span><span class="p">,</span>
+                        <span class="s1">&#39;convergence_gmax&#39;</span><span class="p">:</span> <span class="s2">&quot; XYZABC (hartree/bohr)&quot;</span><span class="p">,</span>
+                        <span class="s1">&#39;convergence_drms&#39;</span><span class="p">:</span> <span class="s2">&quot; XYZABC (Angstrom)&quot;</span><span class="p">,</span>
+                        <span class="s1">&#39;convergence_dmax&#39;</span><span class="p">:</span> <span class="s2">&quot; XYZABC (Angstrom)&quot;</span><span class="p">,</span>
+                       <span class="p">}</span>
+
+<span class="n">default_settings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">default_settings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">FloatText</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">][</span><span class="n">criteria</span><span class="p">],</span> <span class="n">description</span> <span class="o">=</span>  <span class="n">criteria_description</span><span class="p">[</span><span class="n">criteria</span><span class="p">],</span>
+                                            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;99%&quot;</span><span class="p">)))</span>
+<span class="n">default_settings</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">default_settings</span><span class="p">)</span>
+
+<span class="n">tight_settings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;tight&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">tight_settings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">FloatText</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;tight&quot;</span><span class="p">][</span><span class="n">criteria</span><span class="p">],</span> <span class="n">description</span> <span class="o">=</span>  <span class="n">criteria_description</span><span class="p">[</span><span class="n">criteria</span><span class="p">],</span>
+                                            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;99%&quot;</span><span class="p">)))</span>
+<span class="n">tight_settings</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">tight_settings</span><span class="p">)</span>
+
+<span class="n">get_custom_settings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">get_custom_settings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">FloatText</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">][</span><span class="n">criteria</span><span class="p">],</span> <span class="n">description</span> <span class="o">=</span>  <span class="n">criteria_description</span><span class="p">[</span><span class="n">criteria</span><span class="p">],</span>
+                                            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;99%&quot;</span><span class="p">)))</span>
+<span class="n">custom_input</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">get_custom_settings</span><span class="p">)</span>
+
+<span class="n">select_conv_params</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Tab</span><span class="p">(</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_settings</span><span class="p">,</span> <span class="n">tight_settings</span><span class="p">,</span> <span class="n">custom_input</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">select_conv_params</span><span class="o">.</span><span class="n">_titles</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s2">&quot;Default criteria&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="s2">&quot;Tight criteria&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="s2">&quot;Custom criteria&quot;</span><span class="p">}</span>
+
+<span class="n">confirm_classical_settings</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Run Classical Calculation&quot;</span><span class="p">,</span>
+                                  <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">classical_result</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># All button switching logic</span>
+
+<span class="c1"># For Step 1</span>
+
+<span class="k">def</span> <span class="nf">file_picker_switch</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c1"># Only allow file upload if option is chosen</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">stored_geometries</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">mol</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">stored_geometries</span><span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]]</span>
+        <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Use &quot;</span><span class="o">+</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; molecule&quot;</span>
+        <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Upload own file&#39;</span><span class="p">:</span>
+        <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="c1"># in case a file was picked previously</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Upload &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Pick an .xyz or .mol file&quot;</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">upload_button_used</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c1"># Rename upload button to show picked filename</span>
+    <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span><span class="s2">&quot;mol&quot;</span><span class="p">]:</span>
+            <span class="n">file_upload</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Upload &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Use my file: &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Please pick an .xyz or .mol file&quot;</span>
+
+<span class="k">def</span> <span class="nf">fileread_failed</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error understanding uploaded file. Use another.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reload page to ensure fresh start!&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">convert_mol_to_xyz</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">number_of_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># num of atoms are mentioned on line 4</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="n">number_of_atoms</span><span class="o">+</span><span class="mi">4</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">fileread_failed</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">xyz</span>
+        
+<span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;mol&quot;</span><span class="p">:</span>
+        <span class="n">content</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">convert_mol_to_xyz</span><span class="p">(</span><span class="n">content</span><span class="p">),</span> <span class="s2">&quot;xyz&quot;</span>
+    <span class="k">return</span> <span class="n">content</span>
+
+<span class="k">def</span> <span class="nf">start_step_2</span><span class="p">():</span>
+    <span class="n">file_picker</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">file_picker</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">file_upload</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_basis</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_spin</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_symmetry</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_charge</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_method</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_geooptimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">get_custom_settings</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">def</span> <span class="nf">file_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span><span class="p">:</span> <span class="c1"># i.e. a file was uploaded</span>
+        <span class="n">molecule_file</span> <span class="o">=</span> <span class="p">(</span><span class="n">file_upload</span><span class="o">.</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;Upload &quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">molecule_file</span> <span class="o">==</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">global</span> <span class="n">mol</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="n">molecule_file</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span> <span class="c1"># to check validity of uploaded geometry</span>
+            <span class="n">temp_mol</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> 
+            <span class="n">temp_mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span> 
+            <span class="n">temp_mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">temp_mol</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">fileread_failed</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">molecule_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_picker</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.xyz&quot;</span>
+    <span class="n">start_step_2</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">molecule_file</span>
+
+<span class="k">def</span> <span class="nf">start_step_3</span><span class="p">():</span>
+    <span class="n">select_basis</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_spin</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_symmetry</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_charge</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_method</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_geooptimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">get_custom_settings</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    
+    
+
+<span class="k">def</span> <span class="nf">classical_settings_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="n">start_step_3</span><span class="p">()</span>
+    <span class="k">global</span> <span class="n">mol</span>
+    <span class="k">global</span> <span class="n">conv_params</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">select_basis</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">spin</span>  <span class="o">=</span> <span class="n">select_spin</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">symmetry</span> <span class="o">=</span> <span class="n">select_symmetry</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">select_charge</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;tight&quot;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">][</span><span class="n">criteria</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_convergence_widgets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;HF&#39;</span><span class="p">:</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">HF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span> <span class="c1"># mf stands for mean-field</span>
+        <span class="c1"># the mean-field object stores final converged ground-state energy, MO coefficients, occupations, etc. </span>
+    <span class="k">elif</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;KS&#39;</span><span class="p">:</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">KS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="n">mf</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;pbe&quot;</span>
+    <span class="n">mf</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span> <span class="c1"># setup kernel</span>
+    <span class="n">classical_result</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculating...&quot;</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">geomoptimize</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="o">**</span><span class="n">conv_params</span><span class="p">)</span>
+    <span class="n">classical_result</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;The classically calculated ground state energy of the system is: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">e_tot</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; hartree.&quot;</span>
+
+<span class="c1"># For Step 2</span>
+
+
+<span class="c1"># Observers</span>
+    
+<span class="n">file_picker</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">file_picker_switch</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="c1"># Monitor option chosen by file picker</span>
+<span class="n">file_upload</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">upload_button_used</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="c1"># Monitor which file was picked</span>
+<span class="n">molecule_file</span> <span class="o">=</span> <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">file_confirmed</span><span class="p">)</span> <span class="c1"># To move to step 2</span>
+<span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">classical_settings_confirmed</span><span class="p">)</span> <span class="c1"># To move to step 3</span>
+
+
+
+<span class="c1"># Build the full widget</span>
+<span class="n">calculator</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">titlebar</span><span class="p">,</span><span class="n">subtitle1</span><span class="p">,</span>
+                                    <span class="n">file_box</span><span class="p">,</span><span class="n">confirm_file_button</span><span class="p">,</span>
+                                    <span class="n">subtitle2</span><span class="p">,</span>
+                                    <span class="n">select_basis</span><span class="p">,</span> <span class="n">select_spin</span><span class="p">,</span> <span class="n">select_symmetry</span><span class="p">,</span><span class="n">select_charge</span><span class="p">,</span>
+                                    <span class="n">select_method</span><span class="p">,</span> <span class="n">select_geooptimizer</span><span class="p">,</span>
+                                    <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;$Convergence$ $settings $&quot;</span><span class="p">),</span>
+                                    <span class="n">select_conv_params</span><span class="p">,</span> <span class="n">confirm_classical_settings</span><span class="p">,</span>
+                                    <span class="n">classical_result</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_thebe-init docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">calculator</span><span class="p">)</span> <span class="c1"># Please wait, the calculator will appear here by itself.</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hello World!
-</pre></div>
-</div>
-</div>
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "86006872c894430eb447359267315df5", "version_major": 2, "version_minor": 0}
+</script></div>
 </div>
 </div>
 
@@ -259,20 +547,20 @@
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python395jvsc74a57bd0a8d81adb2e68d54ebe64d8b07cbe7c73a362f49da1a55288200d827272ffe284",
+            kernelName: "python3",
             path: "./executables"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'python395jvsc74a57bd0a8d81adb2e68d54ebe64d8b07cbe7c73a362f49da1a55288200d827272ffe284'</script>
+    <script>kernelName = 'python3'</script>
 
               </div>
               
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="calculate_molecule.html" title="previous page">Calculate Molecule</a>
+    <a class='left-prev' id="prev-link" href="../executables.html" title="previous page">Run a QuESt calculation</a>
     <a class='right-next' id="next-link" href="../README.html" title="next page">QuESt</a>
 
         </div>
