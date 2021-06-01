@@ -1,6 +1,10 @@
 # PySCF files and folders
 tmp*
 tmp*/
+*.cube
+*.xyz
+*.mol
+*.output
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

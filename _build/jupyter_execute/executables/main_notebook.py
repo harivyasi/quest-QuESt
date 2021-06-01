@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Welcome to Q³ calculator
+# # Welcome to Q³
+# ## Qiskit QuESt Qalculator
+# QuESt, or Quantum Electronic Structure, is the new way of doing chemistry!
+
+# #### To launch the application, please hover on the `rocket` icon (top right) and then click on `Live Code`
+# Then please wait a while till the backend is ready :)
+# ![Instructions](https://raw.githubusercontent.com/QuESt-Calculator/QuESt/main/executables/LiveLaunchScreenshot.png "Instructions")
 
 # In[1]:
 
@@ -9,11 +15,12 @@
 # CODE BEGINS
 
 import ipywidgets as widgets
-import pyscf, qiskit, qiskit_nature
-import pathlib
+import pyscf, py3Dmol, qiskit, qiskit_nature
+import pathlib, io, time
 from pyscf.geomopt.geometric_solver import optimize as geomoptimize
 from pyscf.geomopt.berny_solver import optimize as bernyoptimize
-import ipywidgets as widgets
+from IPython.display import FileLink, Image
+from IPython.utils.io import capture_output
 
 # Setting some defaults
 molecule_file = None # input file to look for
@@ -21,11 +28,13 @@ default_selection_width = "60%"
 style = {'description_width': 'initial'}
 hbegin = "<"+"h2"+">" # using '+' to avoid HTML look in an unrendered ipynb
 hend = "<"+"/h2"+">"
+isosurface_value = 0.03
+opacity = 0.5
 
 # Some geometries
 
 stored_geometries = {"Hydrogen": [['H',  0.00,  0.00,  0.00],
-                                  ['H',  0.76,  0.00,  0.00]],
+                                  ['H',  0.71,  0.00,  0.00]],
                      "Water":    [['O',  0.00,  0.00,  0.00],
                                   ['H',  0.28,  0.89,  0.25],
                                   ['H',  0.61, -0.24, -0.72]],
@@ -62,16 +71,25 @@ conv_params = {"default": { # These are the default settings
 }} 
 
 # Setup a molecule
-global mol
+global mol, mf, view3D
 mol = pyscf.gto.Mole()
+mf = None
 mol.atom = stored_geometries[default_geometry]
 mol.unit = 'A'
-mol.verbose = 0
+mol.output = "geoopt.output"
 
 # Starting with UI
+
 # All widgets logic
 # For step 1
 titlebar = widgets.HTML(value=hbegin.replace('2','1')+"Qiskit QuESt Calculator"+hend.replace('2','1'))
+
+errorbar = widgets.HTML(value="")
+pyscf_out = widgets.Output()
+
+def error_occured(error_message):
+    errorbar.value = error_message
+    exit()
 
 subtitle1 = widgets.HTML(value=hbegin+"Select a molecule"+hend)
 
@@ -85,7 +103,7 @@ file_upload = widgets.FileUpload(accept='.xyz,.mol', multiple=False, description
 file_box = widgets.HBox(children=[file_picker, file_upload],
                         layout=widgets.Layout(width=default_selection_width))
 
-confirm_file_button = widgets.Button(description="Use "+default_geometry+" molecule",
+confirm_file_button = widgets.Button(description="Use "+default_geometry+" molecule", button_style="success",
                                      disabled=False, layout=widgets.Layout(width=default_selection_width))
 
 # For Step 2
@@ -94,23 +112,25 @@ subtitle2 = widgets.HTML(value=hbegin+"Do Classical Calculation"+hend)
 select_basis = widgets.Dropdown(options=['sto-3g', 'sto-6g', 'cc_pVTZ', 'def2-tzvp'], disabled=True,
                                 value = 'sto-3g', description="Basis set for the atoms",
                                 style=style, layout=widgets.Layout(width=default_selection_width))
+
 select_spin = widgets.Dropdown(options=[("spin 0 / multiplicity singlet",0),
                                         ("spin 1 / multiplicity doublet",1),
                                         ("spin 2 / multiplicity triplet",2)], disabled=True,
                                value = 0, description="Spin (number of unparied electrons)",
                                style=style, layout=widgets.Layout(width=default_selection_width))
+
 select_symmetry = widgets.ToggleButtons(options=[True,False], disabled=True,
                                         value = True, description="Make use of Point Group Symmetry",
                                         style=style, layout=widgets.Layout(width=default_selection_width))
+
 select_charge = widgets.SelectionSlider(options=[-1,0,1], disabled=True,
                                         value = 0, description="Charge on the molecule",
                                         style=style, layout=widgets.Layout(width=default_selection_width))
 
-
-
 select_method = widgets.Dropdown(options=[('Hartree-Fock (HF)', 'HF'),('Kohn-Sham (KS)','KS')], disabled=True,
                                  value = 'HF', description="Method", style=style,
                                  layout=widgets.Layout(width=default_selection_width))
+
 select_geooptimizer = widgets.Dropdown(options=[('geomeTRIC','geometric'),('PyBerny', 'pyberny')], disabled=True,
                                        value = 'geometric', description="Geometry Optimizer",
                                        style=style, layout=widgets.Layout(width=default_selection_width))
@@ -144,11 +164,30 @@ select_conv_params = widgets.Tab(children = [default_settings, tight_settings, c
                                  layout=widgets.Layout(width=default_selection_width))
 select_conv_params._titles = {0:"Default criteria",1:"Tight criteria", 2:"Custom criteria"}
 
-confirm_classical_settings = widgets.Button(description="Run Classical Calculation",
+select_verbosity = widgets.SelectionSlider(options=["Minimal", "Optimal", "Full"], value="Optimal",
+                                           description="Verbosity of output file", disabled=True,
+                                           style=style, layout=widgets.Layout(width=default_selection_width))
+
+confirm_classical_settings = widgets.Button(description="Run Classical Calculation", button_style="success",
                                   disabled=True, layout=widgets.Layout(width=default_selection_width))
 
-classical_result = widgets.Label(value="")
+# For step 3
 
+subtitle3 = widgets.HTML(value=hbegin+"Analyze Classical Results"+hend)
+
+classical_energy = widgets.Label(value="")
+
+p3Dw = py3Dmol.view(width=600, height=400)
+select_visual = widgets.ToggleButtons(options=["Geometry","Density","Molecular Orbital"], disabled=True,
+                                      value = "Geometry", description="Plot:")
+select_mo = widgets.IntSlider(value=1, min=1, max=2, step=1, description="MO number", disabled=True)
+        
+visualization = widgets.VBox(children=[select_visual, select_mo])
+
+classical_result_label = widgets.Label(value="")
+classical_result_link = widgets.Output()
+download_classical_result = widgets.HBox(children=[classical_result_label, classical_result_link],
+                                         layout=widgets.Layout(width=default_selection_width))
 
 # All button switching logic
 
@@ -178,28 +217,31 @@ def upload_button_used(value): # Rename upload button to show picked filename
         else:
             confirm_file_button.description = "Please pick an .xyz or .mol file"
 
-def fileread_failed():
-    print("Error understanding uploaded file. Use another.")
-    print("Reload page to ensure fresh start!")
-
-def convert_mol_to_xyz(lines):
+def convert_to_atom_data(molecule_file):
+    if not molecule_file == file_upload.metadata[0]['name']:
+        print("You shouldn't get this message") # kind of assertion check
+    lines = (file_upload.data[0].decode()).splitlines()
+    kind = molecule_file[-3:]
+    xyz = []
+    mol_line_decompose = lambda data : [data[3], float(data[0]), float(data[1]), float(data[2])]
+    xyz_line_decompose = lambda data : [data[0], float(data[1]), float(data[2]), float(data[3])]
     try:
-        number_of_atoms = int(lines[3].split()[0]) # num of atoms are mentioned on line 4
-        xyz = []
-        for line in lines[4:number_of_atoms+4]:
-            data = line.split()
-            xyz.append([data[3], float(data[0]), float(data[1]), float(data[2])])
+        if kind == "mol":
+            # num of atoms are mentioned on line 3, atomic data starts from line 4, counting starts from zeroth line
+            number_of_atoms = int(lines[3].split()[0])
+            begin_line_number = 4
+            line_decompose = mol_line_decompose
+        elif kind == "xyz":
+            # num of atoms are mentioned on line 0, atomic data starts from line 2, counting starts from zeroth line
+            number_of_atoms = int(lines[0].split()[0])
+            begin_line_number = 2
+            line_decompose = xyz_line_decompose
+        end_line_number = begin_line_number+number_of_atoms
+        for line in lines[begin_line_number:end_line_number]:
+            xyz.append(line_decompose(line.split()))
     except:
-        fileread_failed()
+        error_occured("Error understanding uploaded file. Use another.<br>Reload page to ensure fresh start!")
     return xyz
-        
-def read_file(filename):
-    kind = filename[-3:]
-    content = file_upload.data[0].decode()
-    content = content.splitlines()
-    if kind == "mol":
-        content, kind = convert_mol_to_xyz(content), "xyz"
-    return content
 
 def start_step_2():
     file_picker.unobserve_all()
@@ -214,29 +256,34 @@ def start_step_2():
     select_charge.disabled = False
     select_method.disabled = False
     select_geooptimizer.disabled = False
+    select_verbosity.disabled = False
     for widget in get_custom_settings:
         widget.disabled = False
     confirm_classical_settings.disabled = False
 
 def file_confirmed(_):
+    global mol
+    temp_mol = mol.copy()
+    temp_mol.output = "tmp.output"
+    temp_mol.basis = 'sto-3g' 
     if not file_upload.disabled: # i.e. a file was uploaded
-        molecule_file = (file_upload.description).lstrip("Upload ")
-        assert molecule_file == file_upload.metadata[0]['name']
-        global mol
-        mol.atom = read_file(molecule_file)
-        try: # to check validity of uploaded geometry
-            temp_mol = mol.copy() 
-            temp_mol.basis = 'sto-3g' 
-            temp_mol.build()
-            del temp_mol
-        except:
-            fileread_failed()
+        molecule_file = ((file_upload.description).lstrip("Upload")).strip()
+        if not molecule_file == file_upload.metadata[0]['name']:
+            print("You shouldn't get this message") # kind of assertion check
+        temp_mol.atom = convert_to_atom_data(molecule_file)
     else:
         molecule_file = str(file_picker.value)+".xyz"
+    try: # to check validity of uploaded geometry / included geometry and to generate xyz for 3D view
+        temp_mol.build()
+        mol.atom = temp_mol.atom # because build was a success
+    except:
+        error_occured("Error understanding uploaded file. Use another.<br>Reload page to ensure fresh start!")
+    del temp_mol
     start_step_2()
-    return molecule_file
 
-def start_step_3():
+# For Step 2
+
+def start_step_3a():
     select_basis.disabled = True
     select_spin.disabled = True
     select_symmetry.disabled = True
@@ -246,17 +293,45 @@ def start_step_3():
     for widget in get_custom_settings:
         widget.disabled = True
     confirm_classical_settings.disabled = True
-    
-    
+    select_verbosity.disabled = True
 
+def start_step_3b():
+    select_visual.disabled = False
+
+def visual_switched(value):
+    select_mo.disabled = True
+    if value['new'] == "Geometry":
+        p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+    elif value['new'] == "Density":
+        p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
+        p3Dw.addVolumetricData("electron_density.cube", "cube", {'isoval': isosurface_value, 'color': "red", 'opacity': opacity})
+    elif value['new'] == "Molecular Orbital":
+        select_mo.disabled = False
+        mo_changed(None)
+    p3Dw.update()
+
+def mo_changed(_):
+    p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
+    p3Dw.addVolumetricData("orb_num_"+str(select_mo.value+1)+".cube", "cube", {'isoval': -isosurface_value, 'color': "red", 'opacity': opacity})
+    p3Dw.addVolumetricData("orb_num_"+str(select_mo.value+1)+".cube", "cube", {'isoval': isosurface_value, 'color': "blue", 'opacity': opacity})
+    p3Dw.update()
+
+def generate_cubefiles():
+    pyscf.tools.cubegen.density(mol, "electron_density.cube", mf.make_rdm1()) # create electron density
+    for mo_level in range(len(mf.mo_energy)):
+        pyscf.tools.cubegen.orbital(mol, "orb_num_"+str(mo_level)+".cube", mf.mo_coeff[:,mo_level])
+    select_mo.max = len(mf.mo_energy)+1
+    
 def classical_settings_confirmed(_):
-    start_step_3()
+    start_step_3a()
     global mol
     global conv_params
+    global mf
     mol.basis = select_basis.value
     mol.spin  = select_spin.value
     mol.symmetry = select_symmetry.value
     mol.charge = select_charge.value
+    mol.verbose = {"Minimal": 1, "Optimal": 3, "Full": 5}[select_verbosity.value]
     mol.build()
     if select_conv_params.selected_index == 0:
         conv_params = conv_params["default"]
@@ -272,35 +347,57 @@ def classical_settings_confirmed(_):
     elif select_method.value == 'KS':
         mf = pyscf.scf.KS(mol)
         mf.xc = "pbe"
-    mf.kernel() # setup kernel
-    mol = geomoptimize(mf, **conv_params)
-    classical_result.value = "The classically calculated ground state energy of the system is: "+str(mf.e_tot)+" hartree."
+    classical_energy.value = "Calculating..."
+    with capture_output() as io:
+        mol = geomoptimize(mf, **conv_params)
+    mol.tofile("molecule.xyz",format="xyz") # final optimized geometry
+    mf.kernel() # setup kernel again
+    with pyscf_out:
+        io.show()
+    classical_energy.value = "Calculation done, now generating visulization files."
+    p3Dw.addModel(open("molecule.xyz",'r').read(), "xyz")
+    p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+    p3Dw.update()
+    generate_cubefiles()
+    classical_energy.value = "The classically calculated ground state energy of the system is: "+str(mf.e_tot)+" hartree."
+    classical_result_label.value = "$Download$ $Result$ $File$:"
+    with classical_result_link:
+        display(FileLink(mol.output))
+    start_step_3b()
 
-# For Step 2
+# For Step 3
+
+
 
 
 # Observers
-    
+
 file_picker.observe(file_picker_switch, names='value') # Monitor option chosen by file picker
-file_upload.observe(upload_button_used, names = 'value') # Monitor which file was picked
-molecule_file = confirm_file_button.on_click(file_confirmed) # To move to step 2
+file_upload.observe(upload_button_used, names='value') # Monitor which file was picked
+confirm_file_button.on_click(file_confirmed) # To move to step 2
 confirm_classical_settings.on_click(classical_settings_confirmed) # To move to step 3
-
-
+select_visual.observe(visual_switched, names='value') # Monitor charge density or MO toggle
+select_mo.observe(mo_changed, names='value') # to set the MO in the visualization
 
 # Build the full widget
-calculator = widgets.VBox(children=[titlebar,subtitle1,
+calculator1 = widgets.VBox(children=[titlebar,
+                                    subtitle1,
                                     file_box,confirm_file_button,
                                     subtitle2,
                                     select_basis, select_spin, select_symmetry,select_charge,
                                     select_method, select_geooptimizer,
                                     widgets.Label(value="$Convergence$ $settings $"),
-                                    select_conv_params, confirm_classical_settings,
-                                    classical_result])
+                                    select_conv_params, select_verbosity, confirm_classical_settings,
+                                    subtitle3])
+calculator2 = widgets.VBox(children=[visualization,
+                                    classical_energy, download_classical_result,
+                                    errorbar, pyscf_out])
 
 
 # In[2]:
 
 
-display(calculator) # Please wait, the calculator will appear here
+display(calculator1)
+p3Dw.show()
+display(calculator2)
 

@@ -1,0 +1,9 @@
+        <script>
+        function thebe_btn(){
+            initThebeSBT();
+            (document.getElementById("to-launch-the-application-please-hover-on-the-rocket-icon-top-right-and-then-click-on-live-code")).style.display = "none";
+            }
+        </script>
+        <button type="button" class="btn btn-secondary topbarbtn"
+            onclick="thebe_btn()" title="Launch Thebe" data-toggle="tooltip" data-placement="left"><i
+                class="fas fa-play"></i><span style="margin-left: .4em;">Live Code</span></button>
