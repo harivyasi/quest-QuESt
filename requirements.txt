@@ -8,5 +8,7 @@ pyscf
 geometric
 pyberny
 ipywidgets
-ipython_blocking
-ghp-import
+py3Dmol
+WidgetJmol
+# for development only
+# ghp-import
