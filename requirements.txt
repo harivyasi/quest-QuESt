@@ -8,6 +8,6 @@ pyscf
 geometric
 pyberny
 ipywidgets
-widget_jsmol
+py3Dmol
 # for development only
 # ghp-import
