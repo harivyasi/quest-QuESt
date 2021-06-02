@@ -177,12 +177,13 @@ subtitle3 = widgets.HTML(value=hbegin+"Analyze Classical Results"+hend)
 
 classical_energy = widgets.Label(value="")
 
-p3Dw = py3Dmol.view(width=600, height=400)
+p3Dw = py3Dmol.view()
 select_visual = widgets.ToggleButtons(options=["Geometry","Density","Molecular Orbital"], disabled=True,
                                       value = "Geometry", description="Plot:")
-select_mo = widgets.IntSlider(value=1, min=1, max=2, step=1, description="MO number", disabled=True)
+select_mo = widgets.IntSlider(value=1, min=1, max=1, step=1, description="MO number", disabled=True)
         
-visualization = widgets.VBox(children=[select_visual, select_mo])
+visualization = widgets.VBox(children=[select_visual, select_mo],
+                             layout=widgets.Layout(width=default_selection_width))
 
 classical_result_label = widgets.Label(value="")
 classical_result_link = widgets.Output()
@@ -278,6 +279,12 @@ def file_confirmed(_):
         mol.atom = temp_mol.atom # because build was a success
     except:
         error_occured("Error understanding uploaded file. Use another.<br>Reload page to ensure fresh start!")
+    temp_mol.tofile("given_molecule.xyz",format="xyz") # for temporary geometry
+    p3Dw.removeAllModels()
+    p3Dw.removeAllShapes() # just to be sure
+    p3Dw.addModel(open("given_molecule.xyz",'r').read(), "xyz")
+    p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+    p3Dw.update()
     del temp_mol
     start_step_2()
 
@@ -301,26 +308,38 @@ def start_step_3b():
 def visual_switched(value):
     select_mo.disabled = True
     if value['new'] == "Geometry":
+        p3Dw.removeAllShapes() # just to be sure
         p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+        p3Dw.zoomTo()
+        p3Dw.update()
     elif value['new'] == "Density":
+        p3Dw.removeAllShapes()
+        cube_data = open("electron_density.cube").read()
+        p3Dw.addVolumetricData(cube_data, "cube", {'isoval': isosurface_value, 'color': "red", 'opacity': opacity})
         p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
-        p3Dw.addVolumetricData("electron_density.cube", "cube", {'isoval': isosurface_value, 'color': "red", 'opacity': opacity})
+        p3Dw.zoomTo()
+        p3Dw.update()
     elif value['new'] == "Molecular Orbital":
         select_mo.disabled = False
         mo_changed(None)
-    p3Dw.update()
+    
 
 def mo_changed(_):
+    select_mo.description = "Loading..."
+    cube_data = open("orb_num_"+str(select_mo.value-1)+".cube").read()
+    p3Dw.removeAllShapes()
+    p3Dw.addVolumetricData(cube_data, "cube", {'isoval': -isosurface_value, 'color': "red", 'opacity': opacity})
+    p3Dw.addVolumetricData(cube_data, "cube", {'isoval':  isosurface_value, 'color': "blue", 'opacity': opacity})
     p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
-    p3Dw.addVolumetricData("orb_num_"+str(select_mo.value+1)+".cube", "cube", {'isoval': -isosurface_value, 'color': "red", 'opacity': opacity})
-    p3Dw.addVolumetricData("orb_num_"+str(select_mo.value+1)+".cube", "cube", {'isoval': isosurface_value, 'color': "blue", 'opacity': opacity})
+    p3Dw.zoomTo()
     p3Dw.update()
+    select_mo.description = "MO number"
 
 def generate_cubefiles():
     pyscf.tools.cubegen.density(mol, "electron_density.cube", mf.make_rdm1()) # create electron density
     for mo_level in range(len(mf.mo_energy)):
         pyscf.tools.cubegen.orbital(mol, "orb_num_"+str(mo_level)+".cube", mf.mo_coeff[:,mo_level])
-    select_mo.max = len(mf.mo_energy)+1
+    select_mo.max = len(mf.mo_energy)
     
 def classical_settings_confirmed(_):
     start_step_3a()
@@ -355,6 +374,8 @@ def classical_settings_confirmed(_):
     with pyscf_out:
         io.show()
     classical_energy.value = "Calculation done, now generating visulization files."
+    p3Dw.removeAllModels()
+    p3Dw.removeAllShapes() # just to be sure
     p3Dw.addModel(open("molecule.xyz",'r').read(), "xyz")
     p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
     p3Dw.update()
@@ -388,9 +409,8 @@ calculator1 = widgets.VBox(children=[titlebar,
                                     select_method, select_geooptimizer,
                                     widgets.Label(value="$Convergence$ $settings $"),
                                     select_conv_params, select_verbosity, confirm_classical_settings,
-                                    subtitle3])
+                                    subtitle3, classical_energy, download_classical_result])
 calculator2 = widgets.VBox(children=[visualization,
-                                    classical_energy, download_classical_result,
                                     errorbar, pyscf_out])
 
 
