@@ -238,17 +238,23 @@
 <h1>Welcome to Q³<a class="headerlink" href="#welcome-to-q3" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="qiskit-quest-qalculator">
 <h2>Qiskit QuESt Qalculator<a class="headerlink" href="#qiskit-quest-qalculator" title="Permalink to this headline">¶</a></h2>
-<p>QuESt, or Quantum Electronic Structure, is the new way of doing chemistry!</p>
+<p>QuESt, or Quantum Electronic Structure, is the new way of doing chemistry!
+Happy Qomputing!</p>
 <p>To launch the application, please hover on the <code class="docutils literal notranslate"><span class="pre">rocket</span></code> icon (top right) and then click on <code class="docutils literal notranslate"><span class="pre">Live</span> <span class="pre">Code</span></code>.</p>
 <p>Then please wait a while till the backend is ready :)
 <img alt="Instructions" src="https://raw.githubusercontent.com/QuESt-Calculator/QuESt/main/executables/LiveLaunchScreenshot.png" /></p>
+<p>The notebook also allows you to visualize molecular orbitals on the fly.<br />
+However, the online backend we have embedded here at the moment is not powerful enough.<br />
+To enable visualizations, you download the notebook and set <code class="docutils literal notranslate"><span class="pre">visual</span> <span class="pre">=</span> <span class="pre">True</span></code> to use the functionality.</p>
 <div class="cell tag_thebe-init tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CODE BEGINS</span>
 
+<span class="n">visual</span> <span class="o">=</span> <span class="kc">False</span>
+
 <span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
 <span class="kn">import</span> <span class="nn">pyscf</span><span class="o">,</span> <span class="nn">py3Dmol</span><span class="o">,</span> <span class="nn">qiskit</span><span class="o">,</span> <span class="nn">qiskit_nature</span>
-<span class="kn">import</span> <span class="nn">pathlib</span><span class="o">,</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pathlib</span><span class="o">,</span> <span class="nn">io</span>
 <span class="kn">from</span> <span class="nn">pyscf.geomopt.geometric_solver</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">geomoptimize</span>
 <span class="kn">from</span> <span class="nn">pyscf.geomopt.berny_solver</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">bernyoptimize</span>
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">FileLink</span>
@@ -260,8 +266,9 @@
 <span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;description_width&#39;</span><span class="p">:</span> <span class="s1">&#39;initial&#39;</span><span class="p">}</span>
 <span class="n">hbegin</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span><span class="o">+</span><span class="s2">&quot;h2&quot;</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span> <span class="c1"># using &#39;+&#39; to avoid HTML look in an unrendered ipynb</span>
 <span class="n">hend</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span><span class="o">+</span><span class="s2">&quot;/h2&quot;</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
-<span class="n">isosurface_value</span> <span class="o">=</span> <span class="mf">0.03</span>
-<span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+    <span class="n">isosurface_value</span> <span class="o">=</span> <span class="mf">0.03</span>
+    <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.5</span>
 
 <span class="c1"># Some geometries</span>
 
@@ -303,7 +310,7 @@
 <span class="p">}}</span> 
 
 <span class="c1"># Setup a molecule</span>
-<span class="k">global</span> <span class="n">mol</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">view3D</span>
+<span class="k">global</span> <span class="n">mol</span><span class="p">,</span> <span class="n">mf</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mf</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">stored_geometries</span><span class="p">[</span><span class="n">default_geometry</span><span class="p">]</span>
@@ -409,7 +416,8 @@
 
 <span class="n">classical_energy</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-<span class="n">p3Dw</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+    <span class="n">p3Dw</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
 <span class="n">select_visual</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Geometry&quot;</span><span class="p">,</span><span class="s2">&quot;Charge Density&quot;</span><span class="p">,</span><span class="s2">&quot;Molecular Orbital&quot;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                       <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Geometry&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Plot:&quot;</span><span class="p">,</span>
                                       <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
@@ -513,11 +521,12 @@
     <span class="k">except</span><span class="p">:</span>
         <span class="n">error_occured</span><span class="p">(</span><span class="s2">&quot;Error understanding uploaded file. Use another.&lt;br&gt;Reload page to ensure fresh start!&quot;</span><span class="p">)</span>
     <span class="n">temp_mol</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span> <span class="c1"># for temporary geometry</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
     <span class="k">del</span> <span class="n">temp_mol</span>
     <span class="n">start_step_2</span><span class="p">()</span>
 
@@ -546,18 +555,21 @@
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Charge Density&quot;</span><span class="p">:</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span>
+        <span class="n">select_mo</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Loading...&quot;</span>
         <span class="n">cube_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;electron_density.cube&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">addVolumetricData</span><span class="p">(</span><span class="n">cube_data</span><span class="p">,</span> <span class="s2">&quot;cube&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;isoval&#39;</span><span class="p">:</span> <span class="n">isosurface_value</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="n">opacity</span><span class="p">})</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}})</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">select_mo</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;MO number&quot;</span>
     <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Molecular Orbital&quot;</span><span class="p">:</span>
         <span class="n">select_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">mo_changed</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     
 
 <span class="k">def</span> <span class="nf">mo_changed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="n">select_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">select_mo</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Loading...&quot;</span>
     <span class="n">cube_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;orb_num_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">select_mo</span><span class="o">.</span><span class="n">value</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.cube&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span>
@@ -567,6 +579,7 @@
     <span class="n">p3Dw</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
     <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
     <span class="n">select_mo</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;MO number&quot;</span>
+    <span class="n">select_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">def</span> <span class="nf">generate_cubefiles</span><span class="p">():</span>
     <span class="n">pyscf</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">cubegen</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;electron_density.cube&quot;</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">make_rdm1</span><span class="p">())</span> <span class="c1"># create electron density</span>
@@ -606,13 +619,14 @@
     <span class="n">mf</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span> <span class="c1"># setup kernel again</span>
     <span class="k">with</span> <span class="n">pyscf_out</span><span class="p">:</span>
         <span class="n">io</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculation done, now generating visulization files.&quot;</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-    <span class="n">generate_cubefiles</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+        <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculation done, now generating visulization files.&quot;</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">generate_cubefiles</span><span class="p">()</span>
     <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;The classically calculated ground state energy of the system is: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">e_tot</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; hartree.&quot;</span>
     <span class="n">classical_result_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;$Download$ $Result$ $File$:&quot;</span>
     <span class="k">with</span> <span class="n">classical_result_link</span><span class="p">:</span>
@@ -643,8 +657,12 @@
                                     <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;$Convergence$ $settings $&quot;</span><span class="p">),</span>
                                     <span class="n">select_conv_params</span><span class="p">,</span> <span class="n">select_verbosity</span><span class="p">,</span> <span class="n">confirm_classical_settings</span><span class="p">,</span>
                                     <span class="n">subtitle3</span><span class="p">,</span> <span class="n">classical_energy</span><span class="p">,</span> <span class="n">download_classical_result</span><span class="p">])</span>
-<span class="n">calculator2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">visualization</span><span class="p">,</span>
-                                    <span class="n">errorbar</span><span class="p">,</span> <span class="n">pyscf_out</span><span class="p">])</span>
+
+
+<span class="n">calculator2_children</span>  <span class="o">=</span> <span class="p">[</span><span class="n">visualization</span><span class="p">]</span> <span class="k">if</span> <span class="n">visual</span> <span class="k">else</span> <span class="p">[]</span>
+<span class="n">calculator2_children</span> <span class="o">+=</span> <span class="p">[</span><span class="n">errorbar</span><span class="p">,</span> <span class="n">pyscf_out</span><span class="p">]</span>
+
+<span class="n">calculator2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">calculator2_children</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -652,50 +670,17 @@
 <div class="cell tag_thebe-init docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">calculator1</span><span class="p">)</span>
-<span class="n">p3Dw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+    <span class="n">p3Dw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">display</span><span class="p">(</span><span class="n">calculator2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "436262b73aa64a748daa8dd2186a894e", "version_major": 2, "version_minor": 0}
-</script><div class="output text_html"><div id="3dmolviewer_8606449503209"  style="position: relative; width: 100px; height: 100px">
-        <p id="3dmolwarning_8606449503209" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
-        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
-        </div>
-<script>
-
-var loadScriptAsync = function(uri){
-  return new Promise((resolve, reject) => {
-    var tag = document.createElement('script');
-    tag.src = uri;
-    tag.async = true;
-    tag.onload = () => {
-      resolve();
-    };
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-});
-};
-
-if(typeof $3Dmolpromise === 'undefined') {
-$3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
-}
-
-var viewer_8606449503209 = null;
-var warn = document.getElementById("3dmolwarning_8606449503209");
-if(warn) {
-    warn.parentNode.removeChild(warn);
-}
-$3Dmolpromise.then(function() {
-viewer_8606449503209 = $3Dmol.createViewer($("#3dmolviewer_8606449503209"),{backgroundColor:"white"});
-viewer_8606449503209.zoomTo();
-viewer_8606449503209.render();
-});
-</script></div><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "b9f4a6b20b4d416cbced523d2a64591f", "version_major": 2, "version_minor": 0}
+{"model_id": "7d9b37e8999d4be0b7b95a54c951fc04", "version_major": 2, "version_minor": 0}
+</script><script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "daac2e45146849bcae6f365b39eb914c", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 </div>
