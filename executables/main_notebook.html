@@ -42,7 +42,7 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@latest/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe,.cell"
         const thebe_selector_input = "pre,.cell_input div.highlight"
@@ -409,8 +409,8 @@
 
 <span class="n">classical_energy</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-<span class="n">p3Dw</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">select_visual</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Geometry&quot;</span><span class="p">,</span><span class="s2">&quot;Density&quot;</span><span class="p">,</span><span class="s2">&quot;Molecular Orbital&quot;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="n">p3Dw</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">select_visual</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Geometry&quot;</span><span class="p">,</span><span class="s2">&quot;Charge Density&quot;</span><span class="p">,</span><span class="s2">&quot;Molecular Orbital&quot;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                       <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Geometry&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Plot:&quot;</span><span class="p">,</span>
                                       <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 <span class="n">select_mo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MO number&quot;</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -545,7 +545,7 @@
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Density&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Charge Density&quot;</span><span class="p">:</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span>
         <span class="n">cube_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;electron_density.cube&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">p3Dw</span><span class="o">.</span><span class="n">addVolumetricData</span><span class="p">(</span><span class="n">cube_data</span><span class="p">,</span> <span class="s2">&quot;cube&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;isoval&#39;</span><span class="p">:</span> <span class="n">isosurface_value</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="n">opacity</span><span class="p">})</span>
@@ -659,9 +659,9 @@
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "6a88a555a5a84c4794afb39821f6e812", "version_major": 2, "version_minor": 0}
-</script><div class="output text_html"><div id="3dmolviewer_8602034428256"  style="position: relative; width: 200px; height: 200px">
-        <p id="3dmolwarning_8602034428256" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+{"model_id": "436262b73aa64a748daa8dd2186a894e", "version_major": 2, "version_minor": 0}
+</script><div class="output text_html"><div id="3dmolviewer_8606449503209"  style="position: relative; width: 100px; height: 100px">
+        <p id="3dmolwarning_8606449503209" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -684,18 +684,18 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_8602034428256 = null;
-var warn = document.getElementById("3dmolwarning_8602034428256");
+var viewer_8606449503209 = null;
+var warn = document.getElementById("3dmolwarning_8606449503209");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_8602034428256 = $3Dmol.createViewer($("#3dmolviewer_8602034428256"),{backgroundColor:"white"});
-viewer_8602034428256.zoomTo();
-viewer_8602034428256.render();
+viewer_8606449503209 = $3Dmol.createViewer($("#3dmolviewer_8606449503209"),{backgroundColor:"white"});
+viewer_8606449503209.zoomTo();
+viewer_8606449503209.render();
 });
 </script></div><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "a730de1918d84ced9a378ce26e3b3c80", "version_major": 2, "version_minor": 0}
+{"model_id": "b9f4a6b20b4d416cbced523d2a64591f", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 </div>
