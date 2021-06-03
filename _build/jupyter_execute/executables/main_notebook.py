@@ -4,23 +4,35 @@
 # # Welcome to Q³
 # ## Qiskit QuESt Qalculator
 # QuESt, or Quantum Electronic Structure, is the new way of doing chemistry!
+# Happy Qomputing!
 
-# #### To launch the application, please hover on the `rocket` icon (top right) and then click on `Live Code`
+# To launch the application, please hover on the `rocket` icon (top right) and then click on `Live Code`.  
+# 
 # Then please wait a while till the backend is ready :)
+# The setup time is small for any subsequent launches.  
 # ![Instructions](https://raw.githubusercontent.com/QuESt-Calculator/QuESt/main/executables/LiveLaunchScreenshot.png "Instructions")
+# 
+# The notebook also allows you to visualize molecular orbitals on the fly.  
+# However, the online backend we have embedded here at the moment is not powerful enough.  
+# To enable visualizations, you download the notebook and set `visual = True` to use the functionality.
 
-# In[1]:
+# In[ ]:
 
 
 # CODE BEGINS
 
+visual = False
+
 import ipywidgets as widgets
 import pyscf, py3Dmol, qiskit, qiskit_nature
-import pathlib, io, time
+import pathlib, io
+import numpy as np
+import matplotlib.pyplot as plt
 from pyscf.geomopt.geometric_solver import optimize as geomoptimize
 from pyscf.geomopt.berny_solver import optimize as bernyoptimize
-from IPython.display import FileLink, Image
+from IPython.display import FileLink
 from IPython.utils.io import capture_output
+from energydiagram import ED
 
 # Setting some defaults
 molecule_file = None # input file to look for
@@ -28,8 +40,6 @@ default_selection_width = "60%"
 style = {'description_width': 'initial'}
 hbegin = "<"+"h2"+">" # using '+' to avoid HTML look in an unrendered ipynb
 hend = "<"+"/h2"+">"
-isosurface_value = 0.03
-opacity = 0.5
 
 # Some geometries
 
@@ -71,7 +81,8 @@ conv_params = {"default": { # These are the default settings
 }} 
 
 # Setup a molecule
-global mol, mf, view3D
+global mol, mf, es_data
+es_data = {}
 mol = pyscf.gto.Mole()
 mf = None
 mol.atom = stored_geometries[default_geometry]
@@ -120,7 +131,7 @@ select_spin = widgets.Dropdown(options=[("spin 0 / multiplicity singlet",0),
                                style=style, layout=widgets.Layout(width=default_selection_width))
 
 select_symmetry = widgets.ToggleButtons(options=[True,False], disabled=True,
-                                        value = True, description="Make use of Point Group Symmetry",
+                                        value = True, description="Use Point Group Symmetry",
                                         style=style, layout=widgets.Layout(width=default_selection_width))
 
 select_charge = widgets.SelectionSlider(options=[-1,0,1], disabled=True,
@@ -135,38 +146,49 @@ select_geooptimizer = widgets.Dropdown(options=[('geomeTRIC','geometric'),('PyBe
                                        value = 'geometric', description="Geometry Optimizer",
                                        style=style, layout=widgets.Layout(width=default_selection_width))
 
-criteria_description = {'convergence_energy':"Energy (hartree)",
-                        'convergence_grms': " XYZABC (hartree/bohr)",
-                        'convergence_gmax': " XYZABC (hartree/bohr)",
-                        'convergence_drms': " XYZABC (Angstrom)",
-                        'convergence_dmax': " XYZABC (Angstrom)",
+criteria_description = {'convergence_energy':"Energy [hartree]",
+                        'convergence_grms': "Gradient (RMS) [hartree/bohr]",
+                        'convergence_gmax': "Gradient (maximum)  [hartree/bohr]",
+                        'convergence_drms': "Drift (RMS) [angstrom]",
+                        'convergence_dmax': "Gradient (maximum) [angstrom]",
                        }
 
 default_settings = []
 for criteria in conv_params["default"].keys():
-    default_settings.append(widgets.FloatText(value=conv_params["default"][criteria], description =  criteria_description[criteria],
-                                            style=style, disabled=True, layout=widgets.Layout(width="99%")))
+    default_settings.append(widgets.FloatText(value=conv_params["default"][criteria],
+                                              description =  criteria_description[criteria],
+                                              style=style, disabled=True, layout=widgets.Layout(width="99%")))
 default_settings = widgets.VBox(children=default_settings)
 
 tight_settings = []
 for criteria in conv_params["tight"].keys():
-    tight_settings.append(widgets.FloatText(value=conv_params["tight"][criteria], description =  criteria_description[criteria],
+    tight_settings.append(widgets.FloatText(value=conv_params["tight"][criteria],
+                                            description =  criteria_description[criteria],
                                             style=style, disabled=True, layout=widgets.Layout(width="99%")))
 tight_settings = widgets.VBox(children=tight_settings)
 
 get_custom_settings = []
 for criteria in conv_params["default"].keys():
-    get_custom_settings.append(widgets.FloatText(value=conv_params["default"][criteria], description =  criteria_description[criteria],
-                                            style=style, disabled=True, layout=widgets.Layout(width="99%")))
+    get_custom_settings.append(widgets.FloatText(value=conv_params["default"][criteria],
+                                                 description =  criteria_description[criteria],
+                                                 style=style, disabled=True, layout=widgets.Layout(width="99%")))
 custom_input = widgets.VBox(children=get_custom_settings)
 
 select_conv_params = widgets.Tab(children = [default_settings, tight_settings, custom_input], disabled=True,
                                  layout=widgets.Layout(width=default_selection_width))
 select_conv_params._titles = {0:"Default criteria",1:"Tight criteria", 2:"Custom criteria"}
 
-select_verbosity = widgets.SelectionSlider(options=["Minimal", "Optimal", "Full"], value="Optimal",
-                                           description="Verbosity of output file", disabled=True,
-                                           style=style, layout=widgets.Layout(width=default_selection_width))
+select_classical_screen_output = widgets.Checkbox(description="Show on-screen output",
+                                                  value=False, disabled=True, indent=True,
+                                                  style=style, layout=widgets.Layout(width="39%"))
+
+select_verbosity = widgets.SelectionSlider(description="Output Verbosity", options=["Minimal", "Optimal", "Full"],
+                                           value="Optimal", disabled=True,
+                                           style=style, layout=widgets.Layout(width="default_selection_width"))
+                                           
+
+classical_output = widgets.HBox(children=[select_classical_screen_output, select_verbosity],
+                                style=style, layout=widgets.Layout(width=default_selection_width))
 
 confirm_classical_settings = widgets.Button(description="Run Classical Calculation", button_style="success",
                                   disabled=True, layout=widgets.Layout(width=default_selection_width))
@@ -177,18 +199,56 @@ subtitle3 = widgets.HTML(value=hbegin+"Analyze Classical Results"+hend)
 
 classical_energy = widgets.Label(value="")
 
-p3Dw = py3Dmol.view()
-select_visual = widgets.ToggleButtons(options=["Geometry","Density","Molecular Orbital"], disabled=True,
-                                      value = "Geometry", description="Plot:")
-select_mo = widgets.IntSlider(value=1, min=1, max=1, step=1, description="MO number", disabled=True)
+if visual:
+    p3Dw = py3Dmol.view(width=600,height=400)
+
+select_visual = widgets.Dropdown(options=["Geometry","Charge Density","Molecular Orbital"], disabled=True,
+                                 value = "Geometry", description="Plot:",
+                                 style=style, layout=widgets.Layout(width=default_selection_width))
+
+redraw_view = widgets.Button(description="redraw view", disabled = True,
+                             style=style, layout=widgets.Layout(width=default_selection_width))
+
+download_view3D = widgets.Button(description="download view", disabled = True,
+                                     style=style, layout=widgets.Layout(width=default_selection_width))
+
+select_visual_mo = widgets.IntSlider(value=1, min=1, max=1, step=1, description="MO number", disabled=True,
+                                     style=style, layout=widgets.Layout(width=default_selection_width))
+
+iso_properties = {'isoval':  0.03, 'color':"yellow", 'opacity':0.5}
+iso_properties_neg_color = "green"
+
+set_isovalue = widgets.BoundedFloatText(value=0.03, min = 0, max = 999, step=0.01, description="isovalue", disabled=True,
+                             style=style, layout=widgets.Layout(width="30%"))
+
+set_opacity  = widgets.BoundedFloatText(value=0.5, min=0, max=1.0, step=0.05, description="opacity", disabled=True,
+                             style=style, layout=widgets.Layout(width="30%"))
+
+select_color_pos = widgets.ColorPicker(description=" + ", concise=True, value='yellow', disabled=True,
+                                       style=style, layout=widgets.Layout(width="10%"))
+select_color_neg = widgets.ColorPicker(description=" − ", concise=True, value='green', disabled=True,
+                                       style=style, layout=widgets.Layout(width="10%"))
+
+def freeze_surface3d(value=True):
+    set_isovalue.disabled = value
+    select_color_pos.disabled = value
+    select_color_neg.disabled = value
+    set_opacity.disabled = value
+    redraw_view.disabled = value
         
-visualization = widgets.VBox(children=[select_visual, select_mo],
-                             layout=widgets.Layout(width=default_selection_width))
+visualization = widgets.VBox(children=[widgets.HBox(children=[select_visual, download_view3D, redraw_view],
+                                                    style=style, layout=widgets.Layout(width=default_selection_width)),
+                                       widgets.VBox(children=[select_visual_mo]),
+                                       widgets.HBox(children=[set_isovalue, select_color_pos, select_color_neg, set_opacity],
+                                                    style=style, layout=widgets.Layout(width=default_selection_width))])
 
 classical_result_label = widgets.Label(value="")
 classical_result_link = widgets.Output()
 download_classical_result = widgets.HBox(children=[classical_result_label, classical_result_link],
-                                         layout=widgets.Layout(width=default_selection_width))
+                                        layout=widgets.Layout(width=default_selection_width))
+
+mo_diag_header = widgets.Label("Molecular Occupation for the molecule. Use this for selection of Active Space.")
+mo_diag_view = widgets.Output()
 
 # All button switching logic
 
@@ -258,6 +318,7 @@ def start_step_2():
     select_method.disabled = False
     select_geooptimizer.disabled = False
     select_verbosity.disabled = False
+    select_classical_screen_output.disabled = False
     for widget in get_custom_settings:
         widget.disabled = False
     confirm_classical_settings.disabled = False
@@ -280,17 +341,18 @@ def file_confirmed(_):
     except:
         error_occured("Error understanding uploaded file. Use another.<br>Reload page to ensure fresh start!")
     temp_mol.tofile("given_molecule.xyz",format="xyz") # for temporary geometry
-    p3Dw.removeAllModels()
-    p3Dw.removeAllShapes() # just to be sure
-    p3Dw.addModel(open("given_molecule.xyz",'r').read(), "xyz")
-    p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
-    p3Dw.update()
+    if visual:
+        p3Dw.removeAllModels()
+        p3Dw.removeAllShapes() # just to be sure
+        p3Dw.addModel(open("given_molecule.xyz",'r').read(), "xyz")
+        p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+        p3Dw.update()
     del temp_mol
     start_step_2()
 
 # For Step 2
 
-def start_step_3a():
+def start_step_3():
     select_basis.disabled = True
     select_spin.disabled = True
     select_symmetry.disabled = True
@@ -299,53 +361,134 @@ def start_step_3a():
     select_geooptimizer.disabled = True
     for widget in get_custom_settings:
         widget.disabled = True
+    confirm_classical_settings.unobserve_all()
     confirm_classical_settings.disabled = True
-    select_verbosity.disabled = True
-
-def start_step_3b():
-    select_visual.disabled = False
+    if select_verbosity.value: # Disable if output was asked for
+        select_verbosity.disabled = True
 
 def visual_switched(value):
-    select_mo.disabled = True
+    download_view3D.disabled = True
+    select_visual_mo.disabled = True
+    freeze_surface3d(True)
+    if value is None: # to make it work with visual_switched_coz_redraw()
+        value = {"new": select_visual.value}
     if value['new'] == "Geometry":
         p3Dw.removeAllShapes() # just to be sure
         p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
         p3Dw.zoomTo()
         p3Dw.update()
-    elif value['new'] == "Density":
-        p3Dw.removeAllShapes()
+    elif value['new'] == "Charge Density":
+        redraw_view.description = "loading..."
         cube_data = open("electron_density.cube").read()
-        p3Dw.addVolumetricData(cube_data, "cube", {'isoval': isosurface_value, 'color': "red", 'opacity': opacity})
+        p3Dw.removeAllShapes()
+        p3Dw.addVolumetricData(cube_data, "cube", iso_properties)
         p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
         p3Dw.zoomTo()
         p3Dw.update()
+        redraw_view.description = "redraw view"
+        freeze_surface3d(False)
+        select_color_neg.disabled = True
     elif value['new'] == "Molecular Orbital":
-        select_mo.disabled = False
         mo_changed(None)
-    
+    download_view3D.disabled = False
+
+def visual_switched_coz_redraw(_):
+    visual_switched(None)
+    if select_visual.value == "Geometry":
+        pass
+    elif select_visual.value == "Charge Density":
+        set_isovalue.value = iso_properties['isoval']
+        set_opacity.value = iso_properties['opacity']
+        select_color_pos.value = iso_properties['color']
+    elif select_visual.value == "Molecular Orbital":
+        set_isovalue.value = iso_properties['isoval']
+        set_opacity.value = iso_properties['opacity']
+        select_color_pos.value = iso_properties['color']
+        select_color_neg.value = iso_properties_neg_color
 
 def mo_changed(_):
-    select_mo.description = "Loading..."
-    cube_data = open("orb_num_"+str(select_mo.value-1)+".cube").read()
+    select_visual_mo.disabled = True
+    redraw_view.description = "loading..."
+    cube_data = open("orb_num_"+str(select_visual_mo.value-1)+".cube").read()
     p3Dw.removeAllShapes()
-    p3Dw.addVolumetricData(cube_data, "cube", {'isoval': -isosurface_value, 'color': "red", 'opacity': opacity})
-    p3Dw.addVolumetricData(cube_data, "cube", {'isoval':  isosurface_value, 'color': "blue", 'opacity': opacity})
+    p3Dw.addVolumetricData(cube_data, "cube", iso_properties)
+    p3Dw.addVolumetricData(cube_data, "cube",
+                           {"isoval": -iso_properties['isoval'],
+                            "opacity": iso_properties['opacity'],
+                            "color": iso_properties_neg_color})
     p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
     p3Dw.zoomTo()
     p3Dw.update()
-    select_mo.description = "MO number"
+    redraw_view.description = "redraw view"
+    select_visual_mo.disabled = False
+    freeze_surface3d(False)
 
 def generate_cubefiles():
     pyscf.tools.cubegen.density(mol, "electron_density.cube", mf.make_rdm1()) # create electron density
-    for mo_level in range(len(mf.mo_energy)):
+    for mo_level in range(es_data["num_of_mo"]):
         pyscf.tools.cubegen.orbital(mol, "orb_num_"+str(mo_level)+".cube", mf.mo_coeff[:,mo_level])
-    select_mo.max = len(mf.mo_energy)
+    select_visual_mo.max = es_data["num_of_mo"]
+
+def plot_mo_diagram():
+    global es_data
+    degeneracy_threshold = 0.2
+    levels = [1]
+    if es_data["spin"]:
+        mo_energy = np.sort((np.vstack(mf.mo_energy)).flatten())
+    else:
+        mo_energy = mf.mo_energy
+    for diff in np.abs(np.diff(mo_energy)):
+        if diff < degeneracy_threshold:
+            levels[-1] = levels[-1]+1
+            continue
+        else:
+            levels.append(1)   
+    es_data["mo_degeneracy"] = levels[:] # deep copy
+
+    # separate into filled and unfilled
+    plot_filled = []
+    counted_mo = 0
+    while counted_mo < es_data['num_of_occ']:
+        _ = levels.pop(0)
+        counted_mo += _
+        plot_filled.append(_)
+    plot_unfilled = levels
+
+    # setup labels and separation
+    plot_energy = list(range(-5,25,5)) #energy from -5 to 20, basically determines separation
+    mo_labels = ["HOMO-1", "HOMO", "LUMO","LUMO+1","LUMO+2","LUMO+3"]
+
+    # plot from HOMO-1 to LUMO+3 (or less)
+    fig_height = len(es_data["mo_degeneracy"])*2
+    if fig_height > 12:
+        fig_height = 12
+    fig_width  = 6
+    plt.rcParams['figure.figsize'] = (len(es_data["mo_degeneracy"])*2,12)
+    mo_diagram = ED()
+    for i in range(2): # for HOMO-1 and HOMO
+        mo_diagram.add_level(plot_energy[i], mo_labels[i])
+        mo_diagram.add_electronbox(level_id=i, boxes=plot_filled[(len(plot_filled)-1-i)], electrons=(plot_filled[(len(plot_filled)-1-i)])*2, side=1.5, spacing_f=2.5)
+
+    for i in range(2, len(plot_unfilled)+2, 1): # for all the LUMOs
+        mo_diagram.add_level(plot_energy[i], mo_labels[i])
+        if i == 2:
+            mo_diagram.add_electronbox(level_id=i, boxes=plot_unfilled[i-2], electrons=es_data["elec_above_homo"], side=1.5, spacing_f=2.5)
+        else:
+            mo_diagram.add_electronbox(level_id=i, boxes=plot_unfilled[i-2], electrons=0, side=1.5, spacing_f=2.5)
+        if i == 3:
+            break # break after reaching (and printing) to LUMO+1; can be easily modified to print all LUMOs
+    mo_diagram.offset = -0.7
+    with mo_diag_view:
+        mo_diagram.plot()        
+        mo_diagram.ax.spines['left'].set_visible(False)
+        mo_diagram.ax.axes.get_yaxis().set_visible(False)  
     
 def classical_settings_confirmed(_):
-    start_step_3a()
+    start_step_3()
     global mol
     global conv_params
     global mf
+    global es_data
     mol.basis = select_basis.value
     mol.spin  = select_spin.value
     mol.symmetry = select_symmetry.value
@@ -367,29 +510,56 @@ def classical_settings_confirmed(_):
         mf = pyscf.scf.KS(mol)
         mf.xc = "pbe"
     classical_energy.value = "Calculating..."
-    with capture_output() as io:
+    with capture_output() as pyscf_screen_output:
         mol = geomoptimize(mf, **conv_params)
+    select_classical_screen_output.disabled = True
+    if select_classical_screen_output.value:
+        with pyscf_out:
+            pyscf_screen_output.show()
     mol.tofile("molecule.xyz",format="xyz") # final optimized geometry
     mf.kernel() # setup kernel again
-    with pyscf_out:
-        io.show()
-    classical_energy.value = "Calculation done, now generating visulization files."
-    p3Dw.removeAllModels()
-    p3Dw.removeAllShapes() # just to be sure
-    p3Dw.addModel(open("molecule.xyz",'r').read(), "xyz")
-    p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
-    p3Dw.update()
-    generate_cubefiles()
+    es_data["num_of_mo"] = len(mf.mo_energy)
+    es_data["spin"] = True if type(mf.mo_occ) is tuple else False
+    if es_data["spin"]:
+        mo_occ = np.sum(np.vstack(mf.mo_occ), axis=0)
+    else:
+        mo_occ = mf.mo_occ
+    es_data['num_of_occ'] = int(np.sum(np.floor(mo_occ/2)))
+    es_data['num_of_unocc'] = es_data["num_of_mo"] - np.count_nonzero(mo_occ)
+    es_data['num_of_parocc'] = es_data["num_of_mo"] - es_data['num_of_unocc'] - es_data['num_of_occ']
+    es_data['num_of_elec'] = sum(mol.nelec)
+    es_data['elec_above_homo'] = es_data['num_of_elec']-(es_data['num_of_occ']*2)
+    if visual:
+        classical_energy.value = "Calculation done, now generating visulization files."
+        p3Dw.removeAllModels()
+        p3Dw.removeAllShapes() # just to be sure
+        p3Dw.addModel(open("molecule.xyz",'r').read(), "xyz")
+        p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+        p3Dw.update()
+        generate_cubefiles()
+        select_visual.disabled = False
     classical_energy.value = "The classically calculated ground state energy of the system is: "+str(mf.e_tot)+" hartree."
     classical_result_label.value = "$Download$ $Result$ $File$:"
     with classical_result_link:
         display(FileLink(mol.output))
-    start_step_3b()
+    plot_mo_diagram()
 
 # For Step 3
 
+def isovalue_setter(_):
+    iso_properties['isoval'] = set_isovalue.value
+        
+def opacity_setter(_):
+    iso_properties['opacity'] = set_opacity.value
 
+def pos_color_setter(_):
+    iso_properties['color'] = select_color_pos.value
+    
+def neg_color_setter(_):
+    iso_properties_neg_color = select_color_neg.value
 
+def download_view(_):
+    p3Dw.png()
 
 # Observers
 
@@ -397,27 +567,40 @@ file_picker.observe(file_picker_switch, names='value') # Monitor option chosen b
 file_upload.observe(upload_button_used, names='value') # Monitor which file was picked
 confirm_file_button.on_click(file_confirmed) # To move to step 2
 confirm_classical_settings.on_click(classical_settings_confirmed) # To move to step 3
-select_visual.observe(visual_switched, names='value') # Monitor charge density or MO toggle
-select_mo.observe(mo_changed, names='value') # to set the MO in the visualization
+
+select_visual.observe(visual_switched, names='value')
+redraw_view.on_click(visual_switched_coz_redraw) # Monitor charge density or MO toggle
+select_visual_mo.observe(mo_changed, names='value') # to set the MO in the visualization
+
+set_isovalue.observe(isovalue_setter)
+set_opacity.observe(opacity_setter)
+select_color_pos.observe(pos_color_setter)
+select_color_neg.observe(neg_color_setter)
+download_view3D.on_click(download_view)
 
 # Build the full widget
 calculator1 = widgets.VBox(children=[titlebar,
                                     subtitle1,
                                     file_box,confirm_file_button,
                                     subtitle2,
-                                    select_basis, select_spin, select_symmetry,select_charge,
+                                    select_basis, select_spin, select_charge, select_symmetry,
                                     select_method, select_geooptimizer,
                                     widgets.Label(value="$Convergence$ $settings $"),
-                                    select_conv_params, select_verbosity, confirm_classical_settings,
+                                    select_conv_params, classical_output, confirm_classical_settings,
                                     subtitle3, classical_energy, download_classical_result])
-calculator2 = widgets.VBox(children=[visualization,
-                                    errorbar, pyscf_out])
 
 
-# In[2]:
+calculator2_children  = [visualization] if visual else []
+calculator2_children += [mo_diag_header, mo_diag_view, errorbar, pyscf_out]
+
+calculator2 = widgets.VBox(children=calculator2_children)
+
+
+# In[ ]:
 
 
 display(calculator1)
-p3Dw.show()
+if visual:
+    p3Dw.show()
 display(calculator2)
 
