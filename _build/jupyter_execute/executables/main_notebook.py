@@ -464,6 +464,9 @@ def plot_mo_diagram():
         fig_height = 12
     fig_width  = 6
     plt.rcParams['figure.figsize'] = (len(es_data["mo_degeneracy"])*2,12)
+    plt.rcParams['axes.spines.left'] = False
+    plt.rcParams['ytick.left'] = False
+    plt.rcParams['ytick.labelcolor'] = 'w'
     mo_diagram = ED()
     for i in range(2): # for HOMO-1 and HOMO
         mo_diagram.add_level(plot_energy[i], mo_labels[i])
@@ -479,9 +482,7 @@ def plot_mo_diagram():
             break # break after reaching (and printing) to LUMO+1; can be easily modified to print all LUMOs
     mo_diagram.offset = -0.7
     with mo_diag_view:
-        mo_diagram.plot()        
-        mo_diagram.ax.spines['left'].set_visible(False)
-        mo_diagram.ax.axes.get_yaxis().set_visible(False)  
+        mo_diagram.plot(ylabel="")
     
 def classical_settings_confirmed(_):
     start_step_3()

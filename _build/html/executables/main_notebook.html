@@ -694,6 +694,9 @@ To enable visualizations, you download the notebook and set <code class="docutil
         <span class="n">fig_height</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">fig_width</span>  <span class="o">=</span> <span class="mi">6</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.spines.left&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.left&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.labelcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
     <span class="n">mo_diagram</span> <span class="o">=</span> <span class="n">ED</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="c1"># for HOMO-1 and HOMO</span>
         <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_level</span><span class="p">(</span><span class="n">plot_energy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mo_labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -709,9 +712,7 @@ To enable visualizations, you download the notebook and set <code class="docutil
             <span class="k">break</span> <span class="c1"># break after reaching (and printing) to LUMO+1; can be easily modified to print all LUMOs</span>
     <span class="n">mo_diagram</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.7</span>
     <span class="k">with</span> <span class="n">mo_diag_view</span><span class="p">:</span>
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>        
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  
+        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     
 <span class="k">def</span> <span class="nf">classical_settings_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
     <span class="n">start_step_3</span><span class="p">()</span>
