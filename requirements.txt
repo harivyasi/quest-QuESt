@@ -9,5 +9,6 @@ geometric
 pyberny
 ipywidgets
 py3Dmol
+git+git://github.com/QuESt-Calculator/PyEnergyDiagrams
 # for development only
 # ghp-import
