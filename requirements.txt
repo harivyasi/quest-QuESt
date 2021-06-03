@@ -10,5 +10,6 @@ pyberny
 ipywidgets
 py3Dmol
 git+git://github.com/QuESt-Calculator/PyEnergyDiagrams
+pylatexenc
 # for development only
 # ghp-import
