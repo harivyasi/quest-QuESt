@@ -4,30 +4,22 @@
 # # Welcome to Q³
 # ## Qiskit QuESt Qalculator
 # QuESt, or Quantum Electronic Structure, is the new way of doing chemistry!
-# Happy Qomputing!
 
-# To launch the application, please hover on the `rocket` icon (top right) and then click on `Live Code`.  
-# 
+# #### To launch the application, please hover on the `rocket` icon (top right) and then click on `Live Code`
 # Then please wait a while till the backend is ready :)
 # ![Instructions](https://raw.githubusercontent.com/QuESt-Calculator/QuESt/main/executables/LiveLaunchScreenshot.png "Instructions")
-# 
-# The notebook also allows you to visualize molecular orbitals on the fly.  
-# However, the online backend we have embedded here at the moment is not powerful enough.  
-# To enable visualizations, you download the notebook and set `visual = True` to use the functionality.
 
 # In[1]:
 
 
 # CODE BEGINS
 
-visual = False
-
 import ipywidgets as widgets
 import pyscf, py3Dmol, qiskit, qiskit_nature
-import pathlib, io
+import pathlib, io, time
 from pyscf.geomopt.geometric_solver import optimize as geomoptimize
 from pyscf.geomopt.berny_solver import optimize as bernyoptimize
-from IPython.display import FileLink
+from IPython.display import FileLink, Image
 from IPython.utils.io import capture_output
 
 # Setting some defaults
@@ -36,9 +28,8 @@ default_selection_width = "60%"
 style = {'description_width': 'initial'}
 hbegin = "<"+"h2"+">" # using '+' to avoid HTML look in an unrendered ipynb
 hend = "<"+"/h2"+">"
-if visual:
-    isosurface_value = 0.03
-    opacity = 0.5
+isosurface_value = 0.03
+opacity = 0.5
 
 # Some geometries
 
@@ -80,7 +71,7 @@ conv_params = {"default": { # These are the default settings
 }} 
 
 # Setup a molecule
-global mol, mf
+global mol, mf, view3D
 mol = pyscf.gto.Mole()
 mf = None
 mol.atom = stored_geometries[default_geometry]
@@ -186,20 +177,18 @@ subtitle3 = widgets.HTML(value=hbegin+"Analyze Classical Results"+hend)
 
 classical_energy = widgets.Label(value="")
 
-if visual:
-    p3Dw = py3Dmol.view(width=600,height=400)
-select_visual = widgets.ToggleButtons(options=["Geometry","Charge Density","Molecular Orbital"], disabled=True,
-                                      value = "Geometry", description="Plot:",
-                                      layout=widgets.Layout(width=default_selection_width))
-select_mo = widgets.IntSlider(value=1, min=1, max=1, step=1, description="MO number", disabled=True,
-                             layout=widgets.Layout(width=default_selection_width))
+p3Dw = py3Dmol.view()
+select_visual = widgets.ToggleButtons(options=["Geometry","Density","Molecular Orbital"], disabled=True,
+                                      value = "Geometry", description="Plot:")
+select_mo = widgets.IntSlider(value=1, min=1, max=1, step=1, description="MO number", disabled=True)
         
-visualization = widgets.VBox(children=[select_visual, select_mo])
+visualization = widgets.VBox(children=[select_visual, select_mo],
+                             layout=widgets.Layout(width=default_selection_width))
 
 classical_result_label = widgets.Label(value="")
 classical_result_link = widgets.Output()
 download_classical_result = widgets.HBox(children=[classical_result_label, classical_result_link],
-                                        layout=widgets.Layout(width=default_selection_width))
+                                         layout=widgets.Layout(width=default_selection_width))
 
 # All button switching logic
 
@@ -291,12 +280,11 @@ def file_confirmed(_):
     except:
         error_occured("Error understanding uploaded file. Use another.<br>Reload page to ensure fresh start!")
     temp_mol.tofile("given_molecule.xyz",format="xyz") # for temporary geometry
-    if visual:
-        p3Dw.removeAllModels()
-        p3Dw.removeAllShapes() # just to be sure
-        p3Dw.addModel(open("given_molecule.xyz",'r').read(), "xyz")
-        p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
-        p3Dw.update()
+    p3Dw.removeAllModels()
+    p3Dw.removeAllShapes() # just to be sure
+    p3Dw.addModel(open("given_molecule.xyz",'r').read(), "xyz")
+    p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+    p3Dw.update()
     del temp_mol
     start_step_2()
 
@@ -324,22 +312,19 @@ def visual_switched(value):
         p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
         p3Dw.zoomTo()
         p3Dw.update()
-    elif value['new'] == "Charge Density":
-        select_mo.description = "Loading..."
-        cube_data = open("electron_density.cube").read()
+    elif value['new'] == "Density":
         p3Dw.removeAllShapes()
+        cube_data = open("electron_density.cube").read()
         p3Dw.addVolumetricData(cube_data, "cube", {'isoval': isosurface_value, 'color': "red", 'opacity': opacity})
         p3Dw.setStyle({'stick':{'radius': 0.1}, 'sphere':{'radius': 0.2}})
         p3Dw.zoomTo()
         p3Dw.update()
-        select_mo.description = "MO number"
     elif value['new'] == "Molecular Orbital":
         select_mo.disabled = False
         mo_changed(None)
     
 
 def mo_changed(_):
-    select_mo.disabled = True
     select_mo.description = "Loading..."
     cube_data = open("orb_num_"+str(select_mo.value-1)+".cube").read()
     p3Dw.removeAllShapes()
@@ -349,7 +334,6 @@ def mo_changed(_):
     p3Dw.zoomTo()
     p3Dw.update()
     select_mo.description = "MO number"
-    select_mo.disabled = False
 
 def generate_cubefiles():
     pyscf.tools.cubegen.density(mol, "electron_density.cube", mf.make_rdm1()) # create electron density
@@ -389,14 +373,13 @@ def classical_settings_confirmed(_):
     mf.kernel() # setup kernel again
     with pyscf_out:
         io.show()
-    if visual:
-        classical_energy.value = "Calculation done, now generating visulization files."
-        p3Dw.removeAllModels()
-        p3Dw.removeAllShapes() # just to be sure
-        p3Dw.addModel(open("molecule.xyz",'r').read(), "xyz")
-        p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
-        p3Dw.update()
-        generate_cubefiles()
+    classical_energy.value = "Calculation done, now generating visulization files."
+    p3Dw.removeAllModels()
+    p3Dw.removeAllShapes() # just to be sure
+    p3Dw.addModel(open("molecule.xyz",'r').read(), "xyz")
+    p3Dw.setStyle({'stick':{'radius': 0.2}, 'sphere':{'radius': 0.3}})
+    p3Dw.update()
+    generate_cubefiles()
     classical_energy.value = "The classically calculated ground state energy of the system is: "+str(mf.e_tot)+" hartree."
     classical_result_label.value = "$Download$ $Result$ $File$:"
     with classical_result_link:
@@ -427,19 +410,14 @@ calculator1 = widgets.VBox(children=[titlebar,
                                     widgets.Label(value="$Convergence$ $settings $"),
                                     select_conv_params, select_verbosity, confirm_classical_settings,
                                     subtitle3, classical_energy, download_classical_result])
-
-
-calculator2_children  = [visualization] if visual else []
-calculator2_children += [errorbar, pyscf_out]
-
-calculator2 = widgets.VBox(children=calculator2_children)
+calculator2 = widgets.VBox(children=[visualization,
+                                    errorbar, pyscf_out])
 
 
 # In[2]:
 
 
 display(calculator1)
-if visual:
-    p3Dw.show()
+p3Dw.show()
 display(calculator2)
 
