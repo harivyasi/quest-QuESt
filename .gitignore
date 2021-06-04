@@ -137,4 +137,4 @@ dmypy.json
 .pyre/
 
 # VSCode settings
-.vscode/settings.json
+.vscode/

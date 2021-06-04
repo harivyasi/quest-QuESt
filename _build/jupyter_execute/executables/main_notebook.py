@@ -635,7 +635,7 @@ quantum_status = widgets.Label(value="")
 proceed_to_quantum  = widgets.Button(description="Start Quantum Calculation", button_style="success", disabled=True,
                                      style=style, layout=widgets.Layout(width=default_selection_width))
 
-select_num_unocc_mo = widgets.IntSlider(description="# of Unoccupied MO for AS",   value=1, min=0, max=1, disabled=True,
+select_num_unocc_mo = widgets.IntSlider(description="# of Unoccupied MO for AS",   value=1, min=1, max=1, disabled=True,
                                         style=style, layout=widgets.Layout(width=default_selection_width))
 
 select_num_occ_mo   = widgets.IntSlider(description="# of Occupied MO for AS", value=1, min=1, max=1, disabled=True,
@@ -856,14 +856,17 @@ calculator2_children += [subtitle4, quantum_status, proceed_to_quantum,
 
 calculator2 = widgets.VBox(children=calculator2_children)
 
+def run():
+    display(calculator1)
+    if visual:
+        p3Dw.show()
+    display(calculator2)
+
 
 # In[2]:
 
 
-display(calculator1)
-if visual:
-    p3Dw.show()
-display(calculator2)
+run()
 # These global variables are available after full execution of the cells and may be used for further exploration
 # in the downloaded version of this notebook.
 #  - mol, mf (classical PySCF molecule and it's 'mean field' object)

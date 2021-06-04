@@ -865,7 +865,7 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="n">proceed_to_quantum</span>  <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start Quantum Calculation&quot;</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                      <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
-<span class="n">select_num_unocc_mo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;# of Unoccupied MO for AS&quot;</span><span class="p">,</span>   <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="n">select_num_unocc_mo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;# of Unoccupied MO for AS&quot;</span><span class="p">,</span>   <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
 <span class="n">select_num_occ_mo</span>   <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;# of Occupied MO for AS&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1089,16 +1089,19 @@ To enable visualizations, you download the notebook and set <code class="docutil
                          <span class="n">errorbar</span><span class="p">,</span> <span class="n">pyscf_out</span><span class="p">,</span> <span class="n">quantum_output</span><span class="p">]</span>
 
 <span class="n">calculator2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">calculator2_children</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">calculator1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">calculator2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_thebe-init docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">calculator1</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
-    <span class="n">p3Dw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">display</span><span class="p">(</span><span class="n">calculator2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="p">()</span>
 <span class="c1"># These global variables are available after full execution of the cells and may be used for further exploration</span>
 <span class="c1"># in the downloaded version of this notebook.</span>
 <span class="c1">#  - mol, mf (classical PySCF molecule and it&#39;s &#39;mean field&#39; object)</span>
@@ -1110,9 +1113,9 @@ To enable visualizations, you download the notebook and set <code class="docutil
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "595569fec8194df28f579f8916086263", "version_major": 2, "version_minor": 0}
+{"model_id": "48ada2255f3646bb89f317c441fbd959", "version_major": 2, "version_minor": 0}
 </script><script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "62493fbd8dfb455ca894dd77f726a44e", "version_major": 2, "version_minor": 0}
+{"model_id": "23b1744f0cb94c3a8f6375968337137e", "version_major": 2, "version_minor": 0}
 </script></div>
 </div>
 </div>
