@@ -1,0 +1,1443 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H2O Molecule &#8212; Q³ Qiskit QuESt Qalculator</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe,.cell"
+        const thebe_selector_input = "pre,.cell_input div.highlight"
+        const thebe_selector_output = ".output,.cell_output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ethene Molecule" href="Ethene_Workbook.html" />
+    <link rel="prev" title="Welcome to Q³" href="main_notebook.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Q³ Qiskit QuESt Qalculator</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Welcome to Q³ Qiskit QuESt Qalculator
+  </a>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="../notebooks.html">
+   Notebooks
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="main_notebook.html">
+     Welcome to Q³
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     H2O Molecule
+     <br/>
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="Ethene_Workbook.html">
+     Ethene Molecule
+     <br/>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../README.html">
+   QuESt
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/notebooks/Water_bond_stretching.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        
+        <a class="issues-button"
+            href="https://github.com/QuESt-Calculator/QuESt//issues/new?title=Issue%20on%20page%20%2Fnotebooks/Water_bond_stretching.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/QuESt-Calculator/QuESt/edit/main/notebooks/Water_bond_stretching.ipynb"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/QuESt-Calculator/QuESt/main?urlpath=lab/tree/notebooks/Water_bond_stretching.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        <button type="button" class="btn btn-secondary topbarbtn"
+            onclick="initThebeSBT()" title="Launch Thebe" data-toggle="tooltip" data-placement="left"><i
+                class="fas fa-play"></i><span style="margin-left: .4em;">Live Code</span></button>
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   H2O Molecule
+   <br/>
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#libraries">
+   Libraries
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#defining-a-pyscf-molecule">
+   Defining a PySCF molecule
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#understand-the-hf-problem-classically">
+   Understand the HF problem Classically
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#visualization-of-the-molecular-orbitals">
+   Visualization of the Molecular Orbitals
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mos-isosurfaces-visualization">
+   MOs Isosurfaces visualization
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hf-embedding">
+   HF Embedding
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#qiskit-nature-and-pyscf-driver">
+   Qiskit Nature and PySCF driver
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#quantum-active-space">
+   Quantum-Active-Space
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#defining-a-second-quantized-hamiltonian">
+   Defining a Second Quantized Hamiltonian
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mapping-the-electronic-structure">
+   Mapping the electronic structure
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#describing-an-initial-state">
+   Describing an Initial State
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vqe-and-ansatz">
+   VQE and Ansatz
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#backend">
+   Backend
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#optimizer">
+   Optimizer
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solving-the-ground-state-energy">
+   Solving the Ground State Energy
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#classical-solution">
+   Classical solution
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vqe-and-initial-parameters-for-the-ansatz">
+   VQE and initial parameters for the ansatz
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sampling-pes-symmetric-dissociation-profiles-of-hydrogen-from-the-h2o-molecule">
+   Sampling PES Symmetric dissociation profiles of Hydrogen from the H2O molecule
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#compare-to-classical-eigensolver">
+   Compare to classical eigensolver
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="h2o-molecule-br">
+<h1>H2O Molecule <br><a class="headerlink" href="#h2o-molecule-br" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will compute the ground state energy of H2O molecule and the double-dissociation of H atoms.
+First, we should understand the quantum physics problem we have. <br>
+Our task is to solve the non-relativistic Schrödinger equation. To simplify our problem, we consider the Born-Oppenheimer Approximation to separate the problem into nuclei and electronic Hamiltonian. In this approximation, the nuclei can be considered stationary particles. The resulting Hamiltonian to describe our ground state electronic problem is:</p>
+<p>\begin{equation*}
+H_{elec} = -\sum_{i} \frac {\nabla^2_{r_i}}{m_e}  - \sum_{i,j} \frac {Z_i}{\lvert R_i-r_j\rvert} + \sum_{i,j&gt;i} \frac {Z_i Z_j}{\lvert R_i-R_j \rvert} + \sum_{i,j&gt;i} \frac {1}{\lvert r_i-r_j \rvert}
+\end{equation*}</p>
+</div>
+<div class="section" id="libraries">
+<h1>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mcscf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">dft</span><span class="p">,</span> <span class="n">ao2mo</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">fci</span>
+<span class="kn">from</span> <span class="nn">pyscf.tools</span> <span class="kn">import</span> <span class="n">molden</span><span class="p">,</span> <span class="n">cubegen</span>
+<span class="kn">from</span> <span class="nn">pyscf.geomopt.geometric_solver</span> <span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.drivers</span> <span class="kn">import</span> <span class="n">PySCFDriver</span><span class="p">,</span> <span class="n">UnitsType</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">,</span>  <span class="n">HFMethodType</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.problems.second_quantization.electronic</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.converters.second_quantization</span> <span class="kn">import</span> <span class="n">QubitConverter</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.mappers.second_quantization</span> <span class="kn">import</span> <span class="n">ParityMapper</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.transformers</span> <span class="kn">import</span> <span class="n">ActiveSpaceTransformer</span><span class="p">,</span> <span class="n">FreezeCoreTransformer</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.ground_state_solvers</span> <span class="kn">import</span> <span class="n">GroundStateEigensolver</span>
+
+<span class="c1"># qiskit</span>
+<span class="kn">from</span> <span class="nn">qiskit.utils</span> <span class="kn">import</span> <span class="n">QuantumInstance</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">Aer</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms.minimum_eigen_solvers</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">,</span> <span class="n">VQE</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SLSQP</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">ExcitationPreserving</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">BasicAer</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">,</span> <span class="n">VQE</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SLSQP</span>
+
+<span class="c1"># qiskit nature imports</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.problems.second_quantization</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.converters.second_quantization</span> <span class="kn">import</span> <span class="n">QubitConverter</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.mappers.second_quantization</span> <span class="kn">import</span> <span class="n">JordanWignerMapper</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms</span> <span class="kn">import</span> <span class="n">GroundStateEigensolver</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.drivers</span> <span class="kn">import</span> <span class="n">PySCFDriver</span><span class="p">,</span> <span class="n">UnitsType</span><span class="p">,</span> <span class="n">Molecule</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.pes_samplers</span> <span class="kn">import</span> <span class="n">BOPESSampler</span><span class="p">,</span> <span class="n">Extrapolator</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-a-pyscf-molecule">
+<h1>Defining a PySCF molecule<a class="headerlink" href="#defining-a-pyscf-molecule" title="Permalink to this headline">¶</a></h1>
+<p>When using our graphical interface, you can upload directly an XYZ molecule file.</p>
+<p>For this tutorial we will be using PySCF code for our classical quantum chemistry calculations. You can use the function <code class="docutils literal notranslate"><span class="pre">my_pyscf_mol</span></code> to generate an molecule object class within PySCF. <br></p>
+<ul>
+<li>symmetry</li>
+<li>spin</li>
+<li>charge</li>
+<li>units</li>
+<li>basis</li>
+<li>output</li>
+</ul>
+<div class="alert alert-block alert-info">
+<b>Tip:</b>Be aware that the number Molecular Orbitals (MOs) is determined by the basis set.
+    Basis sets have a long developing history and have a high variety. 
+    We develop this problem with the simplest basis sets.
+</div><div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Function to define a molecule with the GTO class</span>
+<span class="k">def</span> <span class="nf">my_pyscf_mol</span><span class="p">(</span><span class="n">xyz_file</span> <span class="p">,</span><span class="n">symmetry</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+    <span class="n">my_molecule</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">xyz_file</span><span class="p">))</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">symmetry</span> <span class="o">=</span> <span class="n">symmetry</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">spin</span> <span class="o">=</span> <span class="n">spin</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">charge</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">units</span>
+    <span class="n">my_moleculeverbose</span> <span class="o">=</span> <span class="mi">5</span> 
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">my_molecule</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Read previously optimized RHF Optimized structures</span>
+<span class="n">opt_sto3g</span> <span class="o">=</span> <span class="n">my_pyscf_mol</span><span class="p">(</span><span class="n">xyz_file</span><span class="o">=</span><span class="s2">&quot;opt_sto3g.xyz&quot;</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span> <span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s1">&#39;sto3g&#39;</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;opt_sto3g.out&#39;</span><span class="p">)</span>
+<span class="n">opt_631</span> <span class="o">=</span> <span class="n">my_pyscf_mol</span><span class="p">(</span><span class="n">xyz_file</span><span class="o">=</span><span class="s2">&quot;opt_631.xyz&quot;</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span> <span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s1">&#39;6-31G&#39;</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;opt_6-31G.out&#39;</span><span class="p">)</span>
+<span class="n">opt_ccpvdz</span> <span class="o">=</span> <span class="n">my_pyscf_mol</span><span class="p">(</span><span class="n">xyz_file</span><span class="o">=</span><span class="s2">&quot;opt_ccpvdz.xyz&quot;</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span> <span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s1">&#39;ccpvdz&#39;</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;opt_ccpvdz.out&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#You can now have a RHF calculation</span>
+
+<span class="c1">#STO3G</span>
+<span class="n">mf_opt_sto3g</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">RHF</span><span class="p">(</span><span class="n">opt_sto3g</span><span class="p">)</span>
+<span class="n">mf_opt_sto3g</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+
+<span class="c1">#631G</span>
+<span class="n">mf_opt_631</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">RHF</span><span class="p">(</span><span class="n">opt_631</span><span class="p">)</span>
+<span class="n">mf_opt_631</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1">#ccpvdz</span>
+<span class="n">mf_opt_ccpvdz</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">RHF</span><span class="p">(</span><span class="n">opt_ccpvdz</span><span class="p">)</span>
+<span class="n">mf_opt_ccpvdz</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="understand-the-hf-problem-classically">
+<h1>Understand the HF problem Classically<a class="headerlink" href="#understand-the-hf-problem-classically" title="Permalink to this headline">¶</a></h1>
+<p>Lets generate the MOs diagram of the problem of interest</p>
+<div class="alert alert-block alert-info">
+<b>Tip:</b> Different Basis will get you different MO numbers
+</div> 
+<p>-With STO-3G you get 7 Orbitals for H2O, 5 Occupied and 2 Unoccupied
+-This part is important to undertand for later in the Active and Inactive space definition.</p>
+<div class="alert alert-block alert-info">
+<b>Tip:</b> You can change the variales low_lim and top_lim to set different limits
+</div> <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="kn">import</span> <span class="n">Line2D</span>
+
+<span class="c1">#Energies and occupation </span>
+<span class="n">Energies</span> <span class="o">=</span> <span class="n">mf_opt_sto3g</span><span class="o">.</span><span class="n">mo_energy</span> <span class="c1"># Energies</span>
+<span class="n">Occupation</span> <span class="o">=</span> <span class="n">mf_opt_sto3g</span><span class="o">.</span><span class="n">mo_occ</span><span class="o">/</span><span class="mi">2</span> <span class="c1"># Number of occupied orbitals</span>
+<span class="n">Orbital_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Occupation</span><span class="p">))</span> <span class="c1"># Number of orbitals within the basis set used</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Energies</span><span class="p">))</span>
+<span class="c1">#Get to arrays with occupied and unoccupied MO</span>
+<span class="n">counter</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Occupation</span><span class="p">)</span>  
+<span class="n">occ_mo</span> <span class="o">=</span> <span class="n">Energies</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="p">)]</span> <span class="c1"># Occupied MOs array</span>
+<span class="n">x_occ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">))</span>
+<span class="n">unocc_mo</span> <span class="o">=</span> <span class="n">Energies</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span><span class="nb">len</span><span class="p">(</span><span class="n">Energies</span><span class="p">)]</span> <span class="c1"># Unccupied MOs array</span>
+<span class="n">x_unocc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unocc_mo</span><span class="p">))</span>
+
+<span class="n">mo_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Energies</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1">#Separate the MOs energies in x-axis</span>
+<span class="n">x_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Energies</span><span class="p">))</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">Energies</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">Energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">Energies</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">temp</span> <span class="o">&gt;</span> <span class="mf">0.2</span><span class="p">:</span>
+        <span class="n">x_new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">temp</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">:</span>
+        <span class="n">x_new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.04</span>
+        <span class="n">x_new</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.04</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">2</span>
+
+<span class="n">x_occ</span> <span class="o">=</span> <span class="n">x_new</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="p">)]</span>
+<span class="n">x_unocc</span> <span class="o">=</span> <span class="n">x_new</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span><span class="nb">len</span><span class="p">(</span><span class="n">Energies</span><span class="p">)]</span>
+<span class="c1">#Plotting occupied and unoccupied in red and blue</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_occ</span><span class="p">,</span> <span class="n">occ_mo</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;dodgerblue&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1444</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_unocc</span><span class="p">,</span> <span class="n">unocc_mo</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;crimson&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1444</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">#Define limits of visualization</span>
+<span class="n">low_lim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span> <span class="c1"># HOMO-2</span>
+<span class="n">top_lim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span> <span class="c1"># LUMO+2</span>
+
+<span class="k">if</span> <span class="n">top_lim</span> <span class="o">&gt;</span> <span class="n">Orbital_number</span><span class="p">:</span>
+    <span class="n">top_lim</span> <span class="o">=</span> <span class="n">Orbital_number</span>
+
+<span class="k">if</span> <span class="n">low_lim</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">low_lim</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1">#Put the index of a range HOMO-2 and LUMO+2 (This can be an option)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">low_lim</span><span class="p">,</span><span class="n">top_lim</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">index</span> <span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x_new</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="n">Energies</span><span class="p">[</span><span class="n">index</span><span class="p">]),</span><span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">x_new</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">-</span><span class="mf">0.015</span><span class="p">,</span><span class="n">Energies</span><span class="p">[</span><span class="n">index</span><span class="p">])</span> <span class="p">,</span><span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;data&#39;</span> <span class="p">)</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy [a.u]&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;MO&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;dodgerblue&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Occu.&#39;</span><span class="p">),</span> <span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;crimson&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unoccup&#39;</span><span class="p">),]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span> <span class="p">,</span><span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span> <span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#Put the limits in y- HOMO-3 and LUMO+4 (This can be an option)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">Energies</span><span class="p">[</span><span class="n">low_lim</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">Energies</span><span class="p">[</span><span class="n">top_lim</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="visualization-of-the-molecular-orbitals">
+<h1>Visualization of the Molecular Orbitals<a class="headerlink" href="#visualization-of-the-molecular-orbitals" title="Permalink to this headline">¶</a></h1>
+<p>To understand the electronic problem and the different MOs of interest. You can generate the isosurface representation of the wavefunction of the MOs.
+You can have an interactive visualization.</p>
+<div class="alert alert-block alert-info">
+<b>Tip:</b> Please install the py3Dmol in your local computer
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Function to read XYZ files</span>
+<span class="k">def</span> <span class="nf">readXYZ</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">filelength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">geomcount</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">progress</span> <span class="o">&lt;</span> <span class="n">filelength</span><span class="p">:</span>
+        <span class="n">tmpgeom</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">progress</span><span class="p">])</span><span class="o">+</span><span class="mi">2</span>
+        <span class="n">rangestart</span> <span class="o">=</span> <span class="n">progress</span>
+        <span class="n">rangeend</span> <span class="o">=</span> <span class="n">progress</span> <span class="o">+</span> <span class="n">length</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rangestart</span><span class="p">,</span> <span class="n">rangeend</span><span class="p">):</span>
+            <span class="n">tmpgeom</span> <span class="o">=</span> <span class="n">tmpgeom</span> <span class="o">+</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">geom</span> <span class="o">+</span> <span class="p">[</span><span class="n">tmpgeom</span><span class="p">]</span>
+        <span class="n">geomcount</span> <span class="o">=</span> <span class="n">geomcount</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span> <span class="o">+</span> <span class="n">length</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">geom</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Interactive selection of the functional of Interest</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span>
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">interactive</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">interact_manual</span>
+<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">index_i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">cubegen</span><span class="o">.</span><span class="n">orbital</span><span class="p">(</span><span class="n">opt_ccpvdz</span><span class="p">,</span> <span class="s1">&#39;temp.cube&#39;</span><span class="p">,</span> <span class="n">mf_opt_ccpvdz</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">[:,</span><span class="n">index_i</span><span class="p">])</span>
+    <span class="n">orbital_mol</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;temp.cube&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">addVolumetricData</span><span class="p">(</span><span class="n">orbital_mol</span><span class="p">,</span> <span class="s2">&quot;cube&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;isoval&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">})</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">addVolumetricData</span><span class="p">(</span><span class="n">orbital_mol</span><span class="p">,</span> <span class="s2">&quot;cube&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;isoval&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">})</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">readXYZ</span><span class="p">(</span><span class="s2">&quot;opt_ccpvdz.xyz&quot;</span><span class="p">)</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="mos-isosurfaces-visualization">
+<h1>MOs Isosurfaces visualization<a class="headerlink" href="#mos-isosurfaces-visualization" title="Permalink to this headline">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#You can remove the comment and visualize the different MOs Isosurface </span>
+<span class="c1">#interact(f, x=mo_numbers);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="hf-embedding">
+<h1>HF Embedding<a class="headerlink" href="#hf-embedding" title="Permalink to this headline">¶</a></h1>
+<p>The current use of quantum computing for computational chemistry studies is limited to a few atom molecules. Any organic molecule can easily have more than 10 atoms, meaning a high number of electrons and MOs depending on the basis set used. To overcome this, we can simplify our problem by having an active space description of the problem. Think of it as a CASSCF formalism where you define your orbitals of interest. In this tutorial, we will use the HF embedding formalism proposed by  <strong><a class="reference external" href="https://aip.scitation.org/doi/10.1063/5.0029536">Rossmannek et al</a></strong> .</p>
+<p>In a nutshell, this method proposes to split the electronic problem into inactive and active space. Where the active space is a selected number of electrons and molecular orbitals to be computed in the quantum computer. The inactive space contribution can be treated with classical quantum chemistry algorithms. The final Hamiltonian incorporates a mean-field potential from the inactive space. of the problem, willThe advantage is to reduce the number of qubits needed for an electronic problem and also to open the door to bigger molecules for quantum computing studies.</p>
+<img src="embedding.png" width=600 /></div>
+<div class="section" id="qiskit-nature-and-pyscf-driver">
+<h1>Qiskit Nature and PySCF driver<a class="headerlink" href="#qiskit-nature-and-pyscf-driver" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will use the Qiskit Nature implementation of the HF embedding. The classical quantum chemistry code use for the inactive space is PySCF. <br></p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">Molecule</span></code> defines <strong>QMolecule</strong> which is Qiskit definition of the molecule.<br>
+The driver <code class="docutils literal notranslate"><span class="pre">PySCFDriver</span></code> translates the information of the Qmolecule object from the PySCF library.<br>
+The hf_method parameter defines the if the restricted (RHF), unrestircted (UHF) or restricted-open (ROHF) configurations are used <br>
+Finally, by running the driver we get the new Qmolecule object for Qiskit Nature.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#using the class Molecule (From Qiskit Nature) we can make an object for PySCFDriver</span>
+<span class="c1">#opt_sto3g is the GTO objectr from PySCF , in this case the optimized structure</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">opt_sto3g</span><span class="o">.</span><span class="n">atom</span><span class="p">,</span><span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">#We call the PySCFDriver and we provided our define molecule object (molecule)</span>
+<span class="c1">#Within the driver we define the units (ANGSTROM), basis using the GTO PySCF driver and hf_method RHF UHF or ROHF</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">PySCFDriver</span><span class="p">(</span><span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">UnitsType</span><span class="o">.</span><span class="n">ANGSTROM</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">opt_sto3g</span><span class="o">.</span><span class="n">basis</span><span class="p">,</span> <span class="n">hf_method</span><span class="o">=</span><span class="n">HFMethodType</span><span class="o">.</span><span class="n">RHF</span><span class="p">)</span>
+
+
+<span class="c1"># #Running PySCF it prints convergence True or False (Important), Total Energy , Electronic dipole and Total dipole</span>
+<span class="c1">#run PySCF with the use of the PySCFDriver and what we will know as quantum molecule </span>
+<span class="n">q_molecule</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="quantum-active-space">
+<h1>Quantum-Active-Space<a class="headerlink" href="#quantum-active-space" title="Permalink to this headline">¶</a></h1>
+<p>Taking into account our first calculation within PySCF and the MOs diagram we can select our active space of interest.<br>
+q_molecule represent our molecule represented within the basis set selected and the level of theory (RHF) <br>
+The idea in this step is to define the number of electrons and orbitals to be assumed as active.
+These active orbitals (and electrons) will be the ones that we will simulate with qubits instead of a classical computer.</p>
+<p>In this tutorial we will define an active space of 2 electron and 3 orbitals (2,3)</p>
+<ul class="simple">
+<li><p>Active space 2 electrons 3 orbitals <br>
+<img src="diagramEx.png" width=140 /></p></li>
+</ul>
+<p>H2O molecule with the STO-3G basis set has 7 MO orbitals, where 5 are occupied. <br></p>
+<p>This means that HOMO electrons are considered , and the MO orbitals are HOMO , LUMO and LUMO+1 <br>
+In this example because of using STO-3G it means to consider ALL unoccupied MOs.</p>
+<p>By calling the function <code class="docutils literal notranslate"><span class="pre">ActiveSpaceTransformer</span></code> you can customize your quantum active space.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">num_electrons</span></code>= (n)</p>
+<ul>
+<li><p>The number of active electrons. If this is a tuple, it represents the number of alpha and beta electrons.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_molecular_orbitals</span></code>(n)</p>
+<ul>
+<li><p>The number of active orbitals</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active_orbitals</span></code>=[int,] * list</p>
+<ul>
+<li><p>A list of indices specifying the molecular orbitals of the active space</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Based on the number of MO within the basis define the occupied and unoccupied virtuals </span>
+
+<span class="c1">#ActiveSpaceTransformer will be use to selected the active space from the q_molecule MO representation</span>
+
+<span class="c1">#You can define as (2,3) (#electrons, #orbitals) </span>
+<span class="c1">#The selection of the MO is around the HOMO</span>
+<span class="n">active_space_trafo_2_3</span> <span class="o">=</span> <span class="n">ActiveSpaceTransformer</span><span class="p">(</span><span class="n">num_electrons</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">num_molecular_orbitals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">#Another option is to specificalle define the index of the MO orbitals</span>
+<span class="c1">#active_space_trafo_2_3 = ActiveSpaceTransformer(num_electrons=2,num_molecular_orbitals=3,active_orbitals=[4,5,6])</span>
+
+<span class="c1">#Example (4,4) , Active Space HOMO-1, HOMO, LUMO and LUMO+1 (4,5,6,7 from the MO Energy diagram displayed above)</span>
+<span class="c1">#active_space_trafo_4_4 = ActiveSpaceTransformer(num_electrons=2,num_molecular_orbitals=4)</span>
+
+
+
+<span class="c1">#Defining the electronic structure problem </span>
+<span class="c1"># We provide our PySCFDriver object and the active space (q_molecule_transformers)</span>
+<span class="n">es_problem</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">q_molecule_transformers</span><span class="o">=</span><span class="p">[</span><span class="n">active_space_trafo_2_3</span><span class="p">])</span>
+
+<span class="c1"># If we want to consider all the MOs for the qubit simulation, we do not use q_molecule_transformes</span>
+<span class="c1"># es_problem = ElectronicStructureProblem(driver)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-a-second-quantized-hamiltonian">
+<h1>Defining a Second Quantized Hamiltonian<a class="headerlink" href="#defining-a-second-quantized-hamiltonian" title="Permalink to this headline">¶</a></h1>
+<p>The way we described above the electronic hamiltonian was in the first-quantization formalism. This formalism assumes an infinite-dimensional Hilbert space. In Classical quantum chemistry applications, we use a finite set of basis set as an approximation. Second quantization formalism is a recursive way to represent this problem. In second-quantization formalism, the Hamiltonian can be represented using fermionic creation and annihilation operators.</p>
+<p>\begin{equation*}
+H = \sum_{pq} h_{pq} a^{\dagger}<em>p a</em>{q} + h_{pqrs} a^{\dagger}<em>p a^{\dagger}<em>q  a</em>{r} a</em>{s}
+\end{equation*}</p>
+<p>Where <span class="math notranslate nohighlight">\(a_p\)</span> is an electron annihilation operator that removes an electron from an orbital with a label p. <span class="math notranslate nohighlight">\(h_{pq}\)</span> <span class="math notranslate nohighlight">\(h_{pqrs}\)</span> are the one and two electron integrals, espectively. <br>
+To prepare our quantum computation we can use pre-computed integrals (from PySCF in this example) <br></p>
+<p>For this we can use our electronic structure problem and call the function to compute the second-quantization operators. The one of our interest is the Hamiltonian. <br></p>
+<p>In order to learn more about how is the second quantization formed in the qubit formalism, take a look in the class <code class="docutils literal notranslate"><span class="pre">.second_q_ops()</span></code> if the <code class="docutils literal notranslate"><span class="pre">ElectronisStructureProblem</span></code> function.</p>
+<p>The indexes of <code class="docutils literal notranslate"><span class="pre">.second_q_ops()[n]</span></code> are for n:</p>
+<ul class="simple">
+<li><p>Electronic Structure operator a.k.a. “Hamiltonian” or 𝐻</p></li>
+<li><p>Total Magnetization operator</p></li>
+<li><p>Total Angular Momentum operator</p></li>
+<li><p>Total Particle Number operator</p></li>
+<li><p>x Dipole operator</p></li>
+<li><p>y Dipole operator</p></li>
+<li><p>z Dipole operator</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate the second-quantized operators</span>
+<span class="n">second_q_ops</span> <span class="o">=</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()</span>
+        <span class="c1">#Returns:</span>
+            <span class="c1">#A list of `SecondQuantizedOp` in the following order: Hamiltonian operator,</span>
+            <span class="c1">#total particle number operator, total angular momentum operator, total magnetization</span>
+            <span class="c1">#operator, and (if available) x, y, z dipole operators.</span>
+        <span class="c1">#&quot;&quot;&quot;</span>
+<span class="n">main_op</span> <span class="o">=</span> <span class="n">second_q_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="mapping-the-electronic-structure">
+<h1>Mapping the electronic structure<a class="headerlink" href="#mapping-the-electronic-structure" title="Permalink to this headline">¶</a></h1>
+<p>Once we the second-quantization representation, we must translate this Hamiltonian into a Quantum computing circuit. To simulate our MOs in a quantum computer. <br>
+This can be achieved by mapping the second quantization representation (creation and annihilation operators) into a set of operators on qubits. This mapping must converse the properties of the Hamiltonian such as the fermionic canonical commutation relations. <br></p>
+<p>All known elementary and composite particles are bosons or fermions, depending on their spin: Particles with half-integer spin are fermions; particles with integer spin are bosons. In Quantum computing there are different algorithms to “mapped” this second quantize representation into qubits depending if the problems are Fermions or Bosons, since we are working with electrons (Fermions) we will use a selected group of Mapping algorithms for Fermion problems.<br></p>
+<p>Two known algorithms are the Jordan-Wigner and Bravy-Kitaev Mappers</p>
+<img src="Mappers.png" width=600 />
+<p>For this tutorial we will use the Bravy-Kitaev Mappers since is know to lead to less qubits than Jordan-Wigner</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">QubitConverter</span></code> is called to define the translate of your second quantization operators using the defined mapping.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Mapper</span></code>:</p>
+<ul>
+<li><p>We strongly suggest to stick with ‘JordanWignerMapper’ or with ‘BravyiKitaevMapper’ which are praised in the literature as the most relevant for quantum chemical simulation.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_qubit_reduction</span></code>:</p>
+<ul>
+<li><p>Is it s popular technique which uses ***** techniques to substract two or three qubits from the calculations</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z2symmetry_reduction</span></code>:</p>
+<ul>
+<li><p>Can be set into ‘auto’ which will automaticall look for symmetries, this technique can be also customized, but the correct symmetries need to be added.</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_nature.mappers.second_quantization</span> <span class="kn">import</span> <span class="n">ParityMapper</span><span class="p">,</span> <span class="n">BravyiKitaevMapper</span><span class="p">,</span> <span class="n">JordanWignerMapper</span><span class="p">,</span> <span class="n">FermionicMapper</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.converters.second_quantization.qubit_converter</span> <span class="kn">import</span> <span class="n">QubitConverter</span>
+
+<span class="c1"># Setup the mapper and qubit converter</span>
+<span class="c1">#For the choices we should have 3 ParityMapper, JordanWignerMapper and FermionicMapping</span>
+<span class="n">mapper_type</span> <span class="o">=</span> <span class="s1">&#39;BravyiKitaevMapper&#39;</span>
+
+
+<span class="k">if</span> <span class="n">mapper_type</span> <span class="o">==</span> <span class="s1">&#39;JordanWignerMapper&#39;</span><span class="p">:</span>
+    <span class="n">mapper</span> <span class="o">=</span> <span class="n">JordanWignerMapper</span><span class="p">()</span>
+<span class="k">elif</span> <span class="n">mapper_type</span> <span class="o">==</span> <span class="s1">&#39;BravyiKitaevMapper&#39;</span><span class="p">:</span>
+    <span class="n">mapper</span> <span class="o">=</span> <span class="n">BravyiKitaevMapper</span><span class="p">()</span>
+
+<span class="n">converter</span> <span class="o">=</span> <span class="n">QubitConverter</span><span class="p">(</span><span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span> <span class="n">two_qubit_reduction</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span><span class="c1">#, z2symmetry_reduction=&#39;auto&#39; or &#39;none&#39;)</span>
+
+<span class="c1"># The fermionic operators are mapped to qubit operators</span>
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">qubit_op</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">main_op</span><span class="p">,</span> <span class="n">num_particles</span><span class="o">=</span><span class="n">num_particles</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="describing-an-initial-state">
+<h1>Describing an Initial State<a class="headerlink" href="#describing-an-initial-state" title="Permalink to this headline">¶</a></h1>
+<p>For our simulations, we will define an initial state for the mapped problem.
+Since we are simulating a electronic problem. We know that the best initial guess is to have all electrons occupying the lowest orbitals (Hund’s rule).<br></p>
+<p>In this section, since we will give the initial state using the class <code class="docutils literal notranslate"><span class="pre">HartreeFock</span></code></p>
+<ul class="simple">
+<li><p>Electrons should occupy the lowest orbitals.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_nature.circuit.library</span> <span class="kn">import</span> <span class="n">HartreeFock</span>
+
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+<span class="n">init_state</span> <span class="o">=</span> <span class="n">HartreeFock</span><span class="p">(</span><span class="n">num_spin_orbitals</span><span class="p">,</span> <span class="n">num_particles</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">init_state</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="vqe-and-ansatz">
+<h1>VQE and Ansatz<a class="headerlink" href="#vqe-and-ansatz" title="Permalink to this headline">¶</a></h1>
+<p>VQE is a hybrid classical-quantum algorithm that is capable to estimate molecular properties such as ground state energies in quantum systems using the variational principle. In this case the wavefunction anzats preparation and energy estimation are both implemed in the quantum cumputer. <br></p>
+<p>VQE algorithm follows these general steps:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1. prepare the parametrized trial quantum state on the quantum computer 
+2. estimate the expectation value of energy using measurements of terms in the Hamiltonian,
+3. update the parameter(s) of the quantum state using a classical optimization routine, and
+4. repeat the previous steps until convergence criteria (e.g., in energy and/or iteration number) are satisfied.
+</pre></div>
+</div>
+<p>Classical quantum chemistry calculations use coupled-cluster methods for the solution of electronic structure problems due to their accuracy. The ansatz for the traditional coupled-cluster method is to use the HF reference wavefunction and apply excitations operators. Generally, the operation of the excitation is truncated to lower excitations like single and double excitations. <br>
+Since this ansatz can be interpreted as fermionic operators this one can be also mapped and used in quantum computers. This ansatz can be readily implemented by mapping fermionic excitation operators to qubit operators and applying the Trotter−Suzuki decomposition to the cluster operator. In this tutorial, we will use the unitary coupled-cluster ansatz truncated up to single and double excitations (UCCSD) for our VQE algorithm.</p>
+<div class="cell tag_outputPrepend docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.circuit.library</span> <span class="kn">import</span> <span class="n">UCCSD</span><span class="p">,</span> <span class="n">PUCCD</span><span class="p">,</span> <span class="n">SUCCD</span>
+
+
+
+<span class="c1"># Parameters for q-UCC antatze</span>
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">UCCSD</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span><span class="n">num_particles</span><span class="p">,</span><span class="n">num_spin_orbitals</span><span class="p">,</span><span class="n">initial_state</span> <span class="o">=</span> <span class="n">init_state</span><span class="p">)</span>
+
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ansatz</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="backend">
+<h1>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h1>
+<p>The backend: this is the quantum machine on which the right part of the figure above will be performed. <br></p>
+<p>Now that you have <span class="math notranslate nohighlight">\(\psi(\vec\theta)\)</span> and <span class="math notranslate nohighlight">\(\hat{H}\)</span> in the translated is time to chose the solvers. <br>
+As as well as the possible services that you have in the IBMQ experience service. <br></p>
+<p>Nunerical solutions can be obtained localy using two solvers <code class="docutils literal notranslate"><span class="pre">NumPyMinimumEigensolver()</span></code> or numerical VQE using <code class="docutils literal notranslate"><span class="pre">QasmSimulatorPy()</span></code> as a backend</p>
+<p>First of all you need to get an <em><a class="reference external" href="https://quantum-computing.ibm.com">account</a></em> at IBMQ experience andn get access to the service and a complete spectrum if rescources to start working with real quantun computers. <rb></p>
+<p>Once you have access to your API Token you can copy it in credentials(‘API_token’). <br>
+Now you need to look at your allowed providers by instanting its class. <br>
+This will later allow access to the backends, where the job will take place. <br>
+The list is divided in two main sections:</p>
+<ul class="simple">
+<li><p>Simulators</p>
+<ul>
+<li><p>Numerical simulators of several qubits and with specifil representations</p></li>
+<li><p>Specific to problems</p></li>
+<li><p>Easier access</p></li>
+</ul>
+</li>
+<li><p>Systems
+_ Limited number of qubits (max 15)</p>
+<ul>
+<li><p>Experimental error analysis</p></li>
+<li><p>Eror correction implementaton algoritms</p></li>
+<li><p>Longer queue <br></p></li>
+</ul>
+</li>
+</ul>
+<p>Here we ask for the perfect quantum emulator</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">Aer</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="optimizer">
+<h1>Optimizer<a class="headerlink" href="#optimizer" title="Permalink to this headline">¶</a></h1>
+<p>Here we can define the optimizer for the VQE algorithm.
+In the case of optimizers, long can be discussed about the behavior of each parameters. <br>
+For most of them the origina documentation is easily accessible.<br></p>
+<ul class="simple">
+<li><p><em><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_l_bfgs_b.html">‘L_BFGS_B’</a></em></p></li>
+<li><p><em><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html">COBYLA</a></em></p></li>
+<li><p><em><a class="reference external" href="https://www.jhuapl.edu/SPSA/">‘SPSA’</a></em></p></li>
+<li><p><em><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html">‘SLSQP’</a></em></p></li>
+</ul>
+<p>For this tutorial we will be using L_BFGS_B</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span><span class="p">,</span> <span class="n">L_BFGS_B</span><span class="p">,</span> <span class="n">SPSA</span><span class="p">,</span> <span class="n">SLSQP</span>
+
+<span class="n">optimizer_type</span> <span class="o">=</span> <span class="s1">&#39;L_BFGS_B&#39;</span>
+
+<span class="c1"># You may want to tune the parameters </span>
+<span class="c1"># of each optimizer, here the defaults are used</span>
+<span class="k">if</span> <span class="n">optimizer_type</span> <span class="o">==</span> <span class="s1">&#39;COBYLA&#39;</span><span class="p">:</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">optimizer_type</span> <span class="o">==</span> <span class="s1">&#39;L_BFGS_B&#39;</span><span class="p">:</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">L_BFGS_B</span><span class="p">(</span><span class="n">maxfun</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">optimizer_type</span> <span class="o">==</span> <span class="s1">&#39;SPSA&#39;</span><span class="p">:</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">optimizer_type</span> <span class="o">==</span> <span class="s1">&#39;SLSQP&#39;</span><span class="p">:</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">SLSQP</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="solving-the-ground-state-energy">
+<h1>Solving the Ground State Energy<a class="headerlink" href="#solving-the-ground-state-energy" title="Permalink to this headline">¶</a></h1>
+<p>We call the function <code class="docutils literal notranslate"><span class="pre">GroundStateEigensolver</span></code> which requires inputs:<br></p>
+<ul>
+<li><p>converter</p>
+<ul class="simple">
+<li><p>Which is the problem mapped and translated in the correct formalism</p></li>
+</ul>
+</li>
+<li><p>solver</p>
+<ul class="simple">
+<li><p>The engine which will simulate or coordinate the quantum computation of the quantum circuit generated by the ansatzs and qubit converter</p></li>
+</ul>
+<ul>
+<li><p>NumPyMinimumEigensolverFactory()</p></li>
+<li><p>NumPyMinimumEigensolver()</p></li>
+<li><p>QasmSimulatorPy()</p></li>
+<li><p>IBMQ_Backends</p>
+<ul class="simple">
+<li><p>Simulators</p></li>
+</ul>
+<ul class="simple">
+<li><p>ibmq_qasm_simulator</p></li>
+<li><p>simulator_statevector</p></li>
+<li><p>simulator_stabilizer
+-Systems</p></li>
+<li><p>ibmq_manila</p></li>
+<li><p>ibmq_santiago</p></li>
+<li><p>1bmq_16_melbourne</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="classical-solution">
+<h1>Classical solution<a class="headerlink" href="#classical-solution" title="Permalink to this headline">¶</a></h1>
+<p>We can solve the problem numerically within the Numpy. This algorithm exactly diagonalizes the Hamiltonian.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.ground_state_solvers.minimum_eigensolver_factories</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolverFactory</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.ground_state_solvers</span> <span class="kn">import</span> <span class="n">GroundStateEigensolver</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+
+<span class="k">def</span> <span class="nf">exact_diagonalizer</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">converter</span><span class="p">):</span>
+    <span class="n">solver</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolverFactory</span><span class="p">()</span>
+    <span class="n">calc</span> <span class="o">=</span> <span class="n">GroundStateEigensolver</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">solver</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">result_exact</span> <span class="o">=</span> <span class="n">exact_diagonalizer</span><span class="p">(</span><span class="n">es_problem</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+<span class="n">exact_energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">result_exact</span><span class="o">.</span><span class="n">eigenenergies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exact electronic energy&quot;</span><span class="p">,</span> <span class="n">exact_energy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_exact</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="vqe-and-initial-parameters-for-the-ansatz">
+<h1>VQE and initial parameters for the ansatz<a class="headerlink" href="#vqe-and-initial-parameters-for-the-ansatz" title="Permalink to this headline">¶</a></h1>
+<p>Once we have define the ansatz, optimizer, the initial state, and backend we are ready to run our VQE algorithm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.algorithms</span> <span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">clear_output</span>
+
+<span class="c1"># Print and save the data in lists</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>  
+    <span class="c1"># Overwrites the same line when printing</span>
+    <span class="n">display</span><span class="p">(</span><span class="s2">&quot;Evaluation: </span><span class="si">{}</span><span class="s2">, Energy: </span><span class="si">{}</span><span class="s2">, Std: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">))</span>
+    <span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eval_count</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+    <span class="n">deviation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
+
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">deviation</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Set initial parameters of the ansatz</span>
+<span class="c1"># We choose a fixed small displacement </span>
+<span class="c1"># So all participants start from similar starting point</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">ordered_parameters</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">]</span> <span class="o">*</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span>
+
+<span class="n">algorithm</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span>
+                <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                <span class="n">quantum_instance</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+                <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubit_op</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="sampling-pes-symmetric-dissociation-profiles-of-hydrogen-from-the-h2o-molecule">
+<h1>Sampling PES Symmetric dissociation profiles of Hydrogen from the H2O molecule<a class="headerlink" href="#sampling-pes-symmetric-dissociation-profiles-of-hydrogen-from-the-h2o-molecule" title="Permalink to this headline">¶</a></h1>
+<p>For this calculation , we wil repeat the previously explained tutorial.
+We will make use of the <code class="docutils literal notranslate"><span class="pre">pes_samplers</span></code> library</p>
+<p>Lets first re-define the H2O molecule and include two bonds as degree of freedom <br></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Generate the Molecule with the bond streching degree of freedom</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.pes_samplers</span> <span class="kn">import</span> <span class="n">BOPESSampler</span><span class="p">,</span> <span class="n">Extrapolator</span>
+
+<span class="c1">#We will define the OH as a degree of freedom </span>
+<span class="n">bond_d1</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Molecule</span><span class="o">.</span><span class="n">absolute_stretching</span><span class="p">,</span> <span class="n">atom_pair</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">bond_d2</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Molecule</span><span class="o">.</span><span class="n">absolute_stretching</span><span class="p">,</span> <span class="n">atom_pair</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="c1">#Creation of H2O Molecule object bond stretching</span>
+<span class="n">mol_H2O_BS</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">opt_sto3g</span><span class="o">.</span><span class="n">atom</span><span class="p">,</span><span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                       <span class="n">degrees_of_freedom</span><span class="o">=</span><span class="p">[</span><span class="n">bond_d1</span><span class="p">,</span><span class="n">bond_d2</span><span class="p">])</span>
+
+<span class="c1">#pass molecule to PSYCF driver</span>
+<span class="n">driver_BS</span><span class="o">=</span> <span class="n">PySCFDriver</span><span class="p">(</span><span class="n">molecule</span><span class="o">=</span><span class="n">mol_H2O_BS</span><span class="p">)</span>
+
+<span class="c1">#Running PySCF it prints convergence True or False (Important), Total Energy , Electronic dipole and Total dipole</span>
+<span class="n">q_molecule</span> <span class="o">=</span> <span class="n">driver_BS</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="c1">#(2,3)</span>
+<span class="n">active_space_trafo_2_3</span> <span class="o">=</span> <span class="n">ActiveSpaceTransformer</span><span class="p">(</span><span class="n">num_electrons</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">num_molecular_orbitals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+
+<span class="c1">#Defining the electronic structure problem </span>
+<span class="n">es_problem</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver_BS</span><span class="p">,</span> <span class="n">q_molecule_transformers</span><span class="o">=</span><span class="p">[</span><span class="n">active_space_trafo_2_3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># qiskit</span>
+<span class="kn">from</span> <span class="nn">qiskit.utils</span> <span class="kn">import</span> <span class="n">QuantumInstance</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">Aer</span>
+
+<span class="c1"># Generate the second-quantized operators</span>
+<span class="n">second_q_ops</span> <span class="o">=</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()</span>
+
+<span class="c1"># Hamiltonian</span>
+<span class="n">main_op</span> <span class="o">=</span> <span class="n">second_q_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup the mapper and qubit converter</span>
+<span class="n">mapper_type</span> <span class="o">=</span> <span class="s1">&#39;BravyiKitaevMapper&#39;</span>
+
+
+<span class="k">if</span> <span class="n">mapper_type</span> <span class="o">==</span> <span class="s1">&#39;JordanWignerMapper&#39;</span><span class="p">:</span>
+    <span class="n">mapper</span> <span class="o">=</span> <span class="n">JordanWignerMapper</span><span class="p">()</span>
+<span class="k">elif</span> <span class="n">mapper_type</span> <span class="o">==</span> <span class="s1">&#39;BravyiKitaevMapper&#39;</span><span class="p">:</span>
+    <span class="n">mapper</span> <span class="o">=</span> <span class="n">BravyiKitaevMapper</span><span class="p">()</span>
+
+
+<span class="n">qubit_converter</span> <span class="o">=</span> <span class="n">QubitConverter</span><span class="p">(</span><span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span> <span class="n">two_qubit_reduction</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># The fermionic operators are mapped to qubit operators</span>
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">qubit_op</span> <span class="o">=</span> <span class="n">qubit_converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">main_op</span><span class="p">,</span> <span class="n">num_particles</span><span class="o">=</span><span class="n">num_particles</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+<span class="n">init_state</span> <span class="o">=</span> <span class="n">HartreeFock</span><span class="p">(</span><span class="n">num_spin_orbitals</span><span class="p">,</span> <span class="n">num_particles</span><span class="p">,</span> <span class="n">qubit_converter</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">init_state</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_outputPrepend docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose the ansatz</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span><span class="p">,</span> <span class="n">L_BFGS_B</span><span class="p">,</span> <span class="n">SPSA</span><span class="p">,</span> <span class="n">SLSQP</span><span class="p">,</span> <span class="n">CG</span>
+
+<span class="c1"># Parameters for q-UCC antatze</span>
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">UCCSD</span><span class="p">(</span><span class="n">qubit_converter</span><span class="p">,</span><span class="n">num_particles</span><span class="p">,</span><span class="n">num_spin_orbitals</span><span class="p">,</span><span class="n">initial_state</span> <span class="o">=</span> <span class="n">init_state</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ansatz</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">Aer</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">L_BFGS_B</span><span class="p">(</span><span class="n">maxfun</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Specify degree of freedom (points of interest)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">results_full</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># full dictionary of results for each condition</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># dictionary of (point,energy) results for each condition</span>
+<span class="n">conditions</span> <span class="o">=</span> <span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;no bootstrapping&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;bootstrapping&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#try:</span>
+<span class="c1">#    initial_point = [0.01] * len(ansatz.ordered_parameters)</span>
+<span class="c1">#except:</span>
+<span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">]</span> <span class="o">*</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span>
+
+
+<span class="n">solver</span><span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span>
+                <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                <span class="n">quantum_instance</span><span class="o">=</span><span class="n">QuantumInstance</span><span class="p">(</span><span class="n">backend</span><span class="p">),</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+                <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+<span class="n">me_gsc</span> <span class="o">=</span> <span class="n">GroundStateEigensolver</span><span class="p">(</span><span class="n">qubit_converter</span><span class="p">,</span> <span class="n">solver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here lets compute the PES using the class <code class="docutils literal notranslate"><span class="pre">BOPESSampler</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">bootstrap</span> <span class="ow">in</span> <span class="n">conditions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># define instance to sampler</span>
+    <span class="n">bs</span> <span class="o">=</span> <span class="n">BOPESSampler</span><span class="p">(</span>
+        <span class="n">gss</span><span class="o">=</span><span class="n">me_gsc</span>
+        <span class="p">,</span><span class="n">bootstrap</span><span class="o">=</span><span class="n">value</span>
+        <span class="p">,</span><span class="n">num_bootstrap</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">,</span><span class="n">extrapolator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># execute</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">es_problem</span><span class="p">,</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">results_full</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">res</span><span class="o">.</span><span class="n">raw_results</span>
+    <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;points_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">points</span>
+    <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;energies_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">energies</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="compare-to-classical-eigensolver">
+<h1>Compare to classical eigensolver<a class="headerlink" href="#compare-to-classical-eigensolver" title="Permalink to this headline">¶</a></h1>
+<p>We can repeat the same calculation with the <code class="docutils literal notranslate"><span class="pre">NumPyMinimumEigensolver()</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define numpy solver</span>
+
+<span class="c1">#All molecule</span>
+<span class="n">converter_full</span> <span class="o">=</span> <span class="n">QubitConverter</span><span class="p">(</span><span class="n">mapper</span><span class="o">=</span><span class="n">BravyiKitaevMapper</span><span class="p">(),</span> <span class="n">two_qubit_reduction</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">es_problem_full</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver_BS</span><span class="p">)</span>
+<span class="n">solver_numpy</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">me_gsc_numpy</span> <span class="o">=</span> <span class="n">GroundStateEigensolver</span><span class="p">(</span><span class="n">converter_full</span><span class="p">,</span> <span class="n">solver_numpy</span><span class="p">)</span>
+<span class="n">bs_classical</span> <span class="o">=</span> <span class="n">BOPESSampler</span><span class="p">(</span>
+               <span class="n">gss</span><span class="o">=</span><span class="n">me_gsc_numpy</span>
+               <span class="p">,</span><span class="n">bootstrap</span><span class="o">=</span><span class="kc">False</span>
+               <span class="p">,</span><span class="n">num_bootstrap</span><span class="o">=</span><span class="kc">None</span>
+               <span class="p">,</span><span class="n">extrapolator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="c1"># execute</span>
+<span class="n">res_np</span> <span class="o">=</span> <span class="n">bs_classical</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">es_problem_full</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+<span class="n">results_full</span><span class="p">[</span><span class="s1">&#39;np&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">res_np</span><span class="o">.</span><span class="n">raw_results</span>
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;points_np&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_np</span><span class="o">.</span><span class="n">points</span>
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;energies_np&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_np</span><span class="o">.</span><span class="n">energies</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">bootstrap</span> <span class="ow">in</span> <span class="n">conditions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;points_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;energies_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;points_np&#39;</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;energies_np&#39;</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dissociation profile&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Interatomic distance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can use PySCF to compute the FCI and compare with our previous calculations</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Full CI</span>
+<span class="kn">import</span> <span class="nn">pyscf</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">fci</span>
+
+<span class="n">isolver</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">fci</span><span class="o">.</span><span class="n">FCI</span><span class="p">(</span><span class="n">opt_sto3g</span><span class="p">,</span> <span class="n">mf_opt_sto3g</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Genera the perturbations points to apply</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">FCI</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">opt_sto3g</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="s2">&quot;opt_sto3g.xyz&quot;</span><span class="p">)</span> <span class="c1">#Read the original structure</span>
+<span class="n">opt_sto3g</span><span class="o">.</span><span class="n">build</span><span class="p">()</span> <span class="c1"># Update the GTO object from PySCF</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span> <span class="c1">#Loop to apply all pertubations</span>
+    <span class="n">mol_H2O_BS</span><span class="o">.</span><span class="n">perturbations</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> 
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">mol_H2O_BS</span><span class="o">.</span><span class="n">geometry</span>
+    <span class="n">opt_sto3g</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">temp</span> <span class="c1"># Save the geometry with the perturbation </span>
+    <span class="n">opt_sto3g</span><span class="o">.</span><span class="n">build</span><span class="p">()</span> <span class="c1">#Update the geometry</span>
+    <span class="n">mf_opt_sto3g</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">RHF</span><span class="p">(</span><span class="n">opt_sto3g</span><span class="p">)</span> <span class="c1">#Run a RHF calculation</span>
+    <span class="n">mf_opt_sto3g</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+    <span class="n">isolver</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">fci</span><span class="o">.</span><span class="n">FCI</span><span class="p">(</span><span class="n">opt_sto3g</span><span class="p">,</span> <span class="n">mf_opt_sto3g</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span> <span class="c1">#Run a FCI calculation</span>
+    <span class="n">isolver</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+    <span class="n">FCI</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isolver</span><span class="o">.</span><span class="n">e_tot</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Plot your FCI results along with your previous calculations</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">bootstrap</span> <span class="ow">in</span> <span class="n">conditions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;points_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;energies_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;points_np&#39;</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;energies_np&#39;</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;points_np&#39;</span><span class="p">],</span> <span class="n">FCI</span> <span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;FCI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dissociation profile&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Interatomic distance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#631 Basis set</span>
+<span class="c1">#Creation of H2O Molecule object bond stretching</span>
+<span class="n">mol_H2O_631</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">opt_631</span><span class="o">.</span><span class="n">atom</span><span class="p">,</span><span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                       <span class="n">degrees_of_freedom</span><span class="o">=</span><span class="p">[</span><span class="n">bond_d1</span><span class="p">,</span><span class="n">bond_d2</span><span class="p">])</span>
+
+<span class="c1">#pass molecule to PSYCF driver</span>
+<span class="n">driver_631</span><span class="o">=</span> <span class="n">PySCFDriver</span><span class="p">(</span><span class="n">molecule</span><span class="o">=</span><span class="n">mol_H2O_BS</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">opt_631</span><span class="o">.</span><span class="n">basis</span><span class="p">)</span>
+
+<span class="c1">#Running PySCF it prints convergence True or False (Important), Total Energy , Electronic dipole and Total dipole</span>
+<span class="n">q_molecule</span> <span class="o">=</span> <span class="n">driver_631</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="c1">#(2,3)</span>
+<span class="n">active_space</span> <span class="o">=</span> <span class="n">ActiveSpaceTransformer</span><span class="p">(</span><span class="n">num_electrons</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">num_molecular_orbitals</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1">#Defining the electronic structure problem </span>
+<span class="n">problem_631</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver_631</span><span class="p">,</span> <span class="n">q_molecule_transformers</span><span class="o">=</span><span class="p">[</span><span class="n">active_space</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Repeat the tutorial using a pople basis set</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Generate the second-quantized operators</span>
+<span class="n">second_q_ops_631</span> <span class="o">=</span> <span class="n">problem_631</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()</span>
+
+<span class="c1">#Hamiltonian</span>
+<span class="n">main_op</span> <span class="o">=</span> <span class="n">second_q_ops_631</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">converter</span> <span class="o">=</span> <span class="n">QubitConverter</span><span class="p">(</span><span class="n">mapper</span><span class="o">=</span><span class="n">BravyiKitaevMapper</span><span class="p">(),</span> <span class="n">two_qubit_reduction</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">#The fermionic operators are mapped to qubit operators</span>
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">qubit_op</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">main_op</span><span class="p">,</span> <span class="n">num_particles</span><span class="o">=</span><span class="n">num_particles</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+<span class="n">init_state</span> <span class="o">=</span> <span class="n">HartreeFock</span><span class="p">(</span><span class="n">num_spin_orbitals</span><span class="p">,</span> <span class="n">num_particles</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">init_state</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_outputPrepend docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters for q-UCC antatze</span>
+<span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span>
+             <span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+<span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">problem_631</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">UCCSD</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span><span class="n">num_particles</span><span class="p">,</span><span class="n">num_spin_orbitals</span><span class="p">,</span><span class="n">initial_state</span> <span class="o">=</span> <span class="n">init_state</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ansatz</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">Aer</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">L_BFGS_B</span><span class="p">(</span><span class="n">maxfun</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Set initial parameters of the ansatz</span>
+<span class="c1">#We choose a fixed small displacement </span>
+<span class="c1">#So all participants start from similar starting point</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">ordered_parameters</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">]</span> <span class="o">*</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span>
+    
+<span class="n">solver</span><span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span>
+                <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                <span class="n">quantum_instance</span><span class="o">=</span><span class="n">QuantumInstance</span><span class="p">(</span><span class="n">backend</span><span class="p">),</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+                <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+<span class="n">me_gsc</span> <span class="o">=</span> <span class="n">GroundStateEigensolver</span><span class="p">(</span><span class="n">qubit_converter</span><span class="p">,</span> <span class="n">solver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">bootstrap</span> <span class="ow">in</span> <span class="n">conditions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># define instance to sampler</span>
+    <span class="n">bs</span> <span class="o">=</span> <span class="n">BOPESSampler</span><span class="p">(</span>
+        <span class="n">gss</span><span class="o">=</span><span class="n">me_gsc</span>
+        <span class="p">,</span><span class="n">bootstrap</span><span class="o">=</span><span class="n">value</span>
+        <span class="p">,</span><span class="n">num_bootstrap</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">,</span><span class="n">extrapolator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># execute</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">problem_631</span><span class="p">,</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">results_full</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">res</span><span class="o">.</span><span class="n">raw_results</span>
+    <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;points_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">points</span>
+    <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;energies_</span><span class="si">{</span><span class="n">bootstrap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">energies</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "QuESt-Calculator/QuESt",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="main_notebook.html" title="previous page">Welcome to Q³</a>
+    <a class='right-next' id="next-link" href="Ethene_Workbook.html" title="next page">Ethene Molecule  <br></a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By QuESt team<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

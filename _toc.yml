@@ -2,7 +2,9 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 #
 - file: intro
-- file: executables
+- file: notebooks
   sections:
-    - file: executables/main_notebook
+    - file: notebooks/main_notebook
+    - file: notebooks/Water_bond_stretching
+    - file: notebooks/Ethene_Workbook
 - file: README

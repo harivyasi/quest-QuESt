@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+,# of CNOTs,# of evaluations,# of parameters,# of qubits,ansatz,energy (Ha),error (mHa),final parameters,mapping,optimizer,optimizer time,pass,score
+0,280,72,8,6,UCCSD,-1.2013928975928243,1.527244997134858e-08,"[ 1.24707543e-06 -8.66475456e-07  1.13808898e-06 -9.48205111e-07
+ -2.50941115e-01  2.75765344e-06  2.87681246e-06 -6.36056329e-03]",JordanWignerMapper,L_BFGS_B,1.3241510391235352,True,280
+=======
+,optimizer,mapping,ansatz,energy (Ha),error (mHa),pass,# of parameters,final parameters,# of evaluations,optimizer time,# of qubits,# of CNOTs,score
+0,L_BFGS_B,JordanWignerMapper,UCCSD,-1.2013928975936983,1.4384715640858303e-08,True,8,"[ 9.05295855e-07 -9.71787092e-07  1.08241992e-06 -8.80905065e-07
+ -2.50941432e-01  2.67500174e-06  2.79108754e-06 -6.36060163e-03]",72,6.375019073486328,6,280,280
+>>>>>>> 46f131a72c667abda564e9d9cbc15d102d723d8d
