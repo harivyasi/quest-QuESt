@@ -254,7 +254,7 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="n">visual</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
-<span class="kn">import</span> <span class="nn">pyscf</span><span class="o">,</span> <span class="nn">py3Dmol</span><span class="o">,</span> <span class="nn">qiskit</span><span class="o">,</span> <span class="nn">qiskit_nature</span>
+<span class="kn">import</span> <span class="nn">pyscf</span><span class="o">,</span> <span class="nn">py3Dmol</span>
 <span class="kn">import</span> <span class="nn">pathlib</span><span class="o">,</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -265,7 +265,7 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="kn">from</span> <span class="nn">energydiagram</span> <span class="kn">import</span> <span class="n">ED</span>
 
 <span class="c1"># Setting some defaults</span>
-<span class="n">molecule_file</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># input file to look for</span>
+<span class="n">molecule_file</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">default_selection_width</span> <span class="o">=</span> <span class="s2">&quot;60%&quot;</span>
 <span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;description_width&#39;</span><span class="p">:</span> <span class="s1">&#39;initial&#39;</span><span class="p">}</span>
 <span class="n">hbegin</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span><span class="o">+</span><span class="s2">&quot;h2&quot;</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span> <span class="c1"># using &#39;+&#39; to avoid HTML look in an unrendered ipynb</span>
@@ -322,7 +322,7 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="c1"># Starting with UI</span>
 
 <span class="c1"># All widgets logic</span>
-<span class="c1"># For step 1</span>
+
 <span class="n">titlebar</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;Qiskit QuESt Calculator&quot;</span><span class="o">+</span><span class="n">hend</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">))</span>
 
 <span class="n">errorbar</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -331,6 +331,118 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="k">def</span> <span class="nf">error_occured</span><span class="p">(</span><span class="n">error_message</span><span class="p">):</span>
     <span class="n">errorbar</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">error_message</span>
     <span class="n">exit</span><span class="p">()</span>
+
+<span class="c1"># For Step 1: Selecting a molecule</span>
+
+<span class="c1"># Program Logic</span>
+
+<span class="k">def</span> <span class="nf">convert_to_atom_data</span><span class="p">(</span><span class="n">molecule_file</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">molecule_file</span> <span class="o">==</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You shouldn&#39;t get this message&quot;</span><span class="p">)</span> <span class="c1"># kind of assertion check</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span><span class="n">file_upload</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">molecule_file</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mol_line_decompose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span> <span class="p">:</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
+    <span class="n">xyz_line_decompose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span> <span class="p">:</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;mol&quot;</span><span class="p">:</span>
+            <span class="c1"># num of atoms are mentioned on line 3, atomic data starts from line 4, counting starts from zeroth line</span>
+            <span class="n">number_of_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">begin_line_number</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="n">line_decompose</span> <span class="o">=</span> <span class="n">mol_line_decompose</span>
+        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;xyz&quot;</span><span class="p">:</span>
+            <span class="c1"># num of atoms are mentioned on line 0, atomic data starts from line 2, counting starts from zeroth line</span>
+            <span class="n">number_of_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">begin_line_number</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">line_decompose</span> <span class="o">=</span> <span class="n">xyz_line_decompose</span>
+        <span class="n">end_line_number</span> <span class="o">=</span> <span class="n">begin_line_number</span><span class="o">+</span><span class="n">number_of_atoms</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">begin_line_number</span><span class="p">:</span><span class="n">end_line_number</span><span class="p">]:</span>
+            <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line_decompose</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">error_occured</span><span class="p">(</span><span class="s2">&quot;Error understanding uploaded file. Use another.&lt;br&gt;Reload page to ensure fresh start!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz</span>
+
+<span class="k">def</span> <span class="nf">plot_mo_diagram</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">es_data</span>
+    <span class="n">degeneracy_threshold</span> <span class="o">=</span> <span class="mf">0.2</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
+        <span class="n">mo_energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_energy</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">())[::</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mo_energy</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_energy</span>
+    <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">mo_energy</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">degeneracy_threshold</span><span class="p">:</span>
+            <span class="n">levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[:]</span> <span class="c1"># deep copy</span>
+
+    <span class="c1"># separate into filled and unfilled</span>
+    <span class="n">plot_filled</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">counted_mo</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">counted_mo</span> <span class="o">&lt;</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">levels</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">counted_mo</span> <span class="o">+=</span> <span class="n">_</span>
+        <span class="n">plot_filled</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+    <span class="n">plot_unfilled</span> <span class="o">=</span> <span class="n">levels</span>
+
+    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;elec_above_homo&quot;</span><span class="p">]:</span>
+        <span class="n">electrons_left</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;elec_above_homo&quot;</span><span class="p">]</span>
+        <span class="n">unocc_mos_required</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">plot_unfilled</span><span class="p">:</span>
+            <span class="n">electrons_left</span> <span class="o">=</span> <span class="n">electrons_left</span> <span class="o">-</span> <span class="p">(</span><span class="n">level</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">electrons_left</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="n">unocc_mos_required</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unocc_mos_required</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># setup labels and separation</span>
+    <span class="n">plot_energy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="c1">#energy from -5 to 20, basically determines separation</span>
+    <span class="n">mo_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HOMO-1&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO&quot;</span><span class="p">,</span><span class="s2">&quot;LUMO+1&quot;</span><span class="p">,</span><span class="s2">&quot;LUMO+2&quot;</span><span class="p">,</span><span class="s2">&quot;LUMO+3&quot;</span><span class="p">]</span>
+
+    <span class="c1"># have to modify rcParams because the newer version of ED is buggy: doesn&#39;t return ax and plt for manipulation</span>
+    <span class="n">fig_height</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">fig_height</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">fig_height</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">fig_width</span>  <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.spines.left&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.left&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.labelcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
+    
+    <span class="c1"># plot from HOMO-1 to LUMO+3 (or less)</span>
+    <span class="n">homo_include</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_occ&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">homo_include</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">mo_diagram</span> <span class="o">=</span> <span class="n">ED</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">homo_include</span><span class="p">):</span> <span class="c1"># for HOMO-1 and HOMO</span>
+        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_level</span><span class="p">(</span><span class="n">plot_energy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mo_labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_electronbox</span><span class="p">(</span><span class="n">level_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">plot_filled</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">homo_include</span><span class="p">],</span> <span class="n">electrons</span><span class="o">=</span><span class="p">(</span><span class="n">plot_filled</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">homo_include</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">spacing_f</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">homo_include</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plot_unfilled</span><span class="p">)</span><span class="o">+</span><span class="n">homo_include</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="c1"># for all the LUMOs</span>
+        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_level</span><span class="p">(</span><span class="n">plot_energy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mo_labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">homo_include</span><span class="p">:</span>
+            <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_electronbox</span><span class="p">(</span><span class="n">level_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">plot_unfilled</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">homo_include</span><span class="p">],</span> <span class="n">electrons</span><span class="o">=</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;elec_above_homo&quot;</span><span class="p">],</span> <span class="n">side</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">spacing_f</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_electronbox</span><span class="p">(</span><span class="n">level_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">plot_unfilled</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">homo_include</span><span class="p">],</span> <span class="n">electrons</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">spacing_f</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">homo_include</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">break</span> <span class="c1"># break after reaching (and printing) to LUMO+1; can be easily modified to print all LUMOs</span>
+    <span class="n">mo_diagram</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.7</span>
+    <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">mo_diag_ouput</span><span class="p">:</span>
+        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mo_diag_view</span><span class="p">:</span>
+        <span class="n">mo_diag_ouput</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">rcParamsDefault</span><span class="p">)</span> <span class="c1"># restore usual settings</span>
+
+<span class="k">def</span> <span class="nf">generate_cubefiles</span><span class="p">():</span>
+    <span class="n">pyscf</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">cubegen</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;electron_density.cube&quot;</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">make_rdm1</span><span class="p">())</span> <span class="c1"># create electron density</span>
+    <span class="k">for</span> <span class="n">mo_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]):</span>
+        <span class="n">pyscf</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">cubegen</span><span class="o">.</span><span class="n">orbital</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;orb_num_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mo_level</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.cube&quot;</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">[:,</span><span class="n">mo_level</span><span class="p">])</span>
+    <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span>
+
+<span class="c1"># Widgets</span>
 
 <span class="n">subtitle1</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">+</span><span class="s2">&quot;Select a molecule&quot;</span><span class="o">+</span><span class="n">hend</span><span class="p">)</span>
 
@@ -347,7 +459,82 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="n">confirm_file_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use &quot;</span><span class="o">+</span><span class="n">default_geometry</span><span class="o">+</span><span class="s2">&quot; molecule&quot;</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
                                      <span class="n">disabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
-<span class="c1"># For Step 2</span>
+<span class="c1"># Widget logic</span>
+
+<span class="k">def</span> <span class="nf">file_picker_switch</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c1"># Only allow file upload if option is chosen</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">stored_geometries</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">mol</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">stored_geometries</span><span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]]</span>
+        <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Use &quot;</span><span class="o">+</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; molecule&quot;</span>
+        <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Upload own file&#39;</span><span class="p">:</span>
+        <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="c1"># in case a file was picked previously</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Upload &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Pick an .xyz or .mol file&quot;</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">upload_button_used</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c1"># Rename upload button to show picked filename</span>
+    <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span><span class="s2">&quot;mol&quot;</span><span class="p">]:</span>
+            <span class="n">file_upload</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Upload &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Use my file: &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Please pick an .xyz or .mol file&quot;</span>
+
+<span class="k">def</span> <span class="nf">file_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">mol</span>
+    <span class="n">temp_mol</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">temp_mol</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;tmp.output&quot;</span>
+    <span class="n">temp_mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span> 
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span><span class="p">:</span> <span class="c1"># i.e. a file was uploaded</span>
+        <span class="n">molecule_file</span> <span class="o">=</span> <span class="p">((</span><span class="n">file_upload</span><span class="o">.</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;Upload&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">molecule_file</span> <span class="o">==</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You shouldn&#39;t get this message&quot;</span><span class="p">)</span> <span class="c1"># kind of assertion check</span>
+        <span class="n">temp_mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">convert_to_atom_data</span><span class="p">(</span><span class="n">molecule_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">molecule_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_picker</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.xyz&quot;</span>
+    <span class="k">try</span><span class="p">:</span> <span class="c1"># to check validity of uploaded geometry / included geometry and to generate xyz for 3D view</span>
+        <span class="n">temp_mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">temp_mol</span><span class="o">.</span><span class="n">atom</span> <span class="c1"># because build was a success</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">error_occured</span><span class="p">(</span><span class="s2">&quot;Error understanding uploaded file. Use another.&lt;br&gt;Reload page to ensure fresh start!&quot;</span><span class="p">)</span>
+    <span class="n">temp_mol</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span> <span class="c1"># for temporary geometry</span>
+    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">del</span> <span class="n">temp_mol</span>
+    <span class="n">end_step_1</span><span class="p">()</span>
+    
+<span class="k">def</span> <span class="nf">end_step_1</span><span class="p">():</span>
+    <span class="n">file_picker</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">file_picker</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">file_upload</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_basis</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_spin</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_symmetry</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_charge</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_method</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_geooptimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_verbosity</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">select_classical_screen_output</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">get_custom_settings</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># For Step 2 : Doing classical calculation</span>
+
+<span class="c1"># Widgets</span>
+
 <span class="n">subtitle2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">+</span><span class="s2">&quot;Do Classical Calculation&quot;</span><span class="o">+</span><span class="n">hend</span><span class="p">)</span>
 
 <span class="n">select_basis</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sto-3g&#39;</span><span class="p">,</span> <span class="s1">&#39;sto-6g&#39;</span><span class="p">,</span> <span class="s1">&#39;cc_pVTZ&#39;</span><span class="p">,</span> <span class="s1">&#39;def2-tzvp&#39;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -368,9 +555,11 @@ To enable visualizations, you download the notebook and set <code class="docutil
                                         <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Charge on the molecule&quot;</span><span class="p">,</span>
                                         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
-<span class="n">select_method</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Hartree-Fock (HF)&#39;</span><span class="p">,</span> <span class="s1">&#39;HF&#39;</span><span class="p">),(</span><span class="s1">&#39;Kohn-Sham (KS)&#39;</span><span class="p">,</span><span class="s1">&#39;KS&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                 <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;HF&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Method&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
-                                 <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">select_method</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Hartree-Fock (HF)&#39;</span><span class="p">,</span> <span class="s1">&#39;HF&#39;</span><span class="p">),</span>
+                                          <span class="p">(</span><span class="s1">&#39;Restricted closed-shell HF (RHF)&#39;</span><span class="p">,</span><span class="s1">&#39;RHF&#39;</span><span class="p">),</span>
+                                          <span class="p">(</span><span class="s1">&#39;Restricted open-shell HF (ROHF)&#39;</span><span class="p">,</span><span class="s1">&#39;ROHF&#39;</span><span class="p">)],</span>
+                                 <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;HF&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Method&quot;</span><span class="p">,</span>
+                                 <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
 <span class="n">select_geooptimizer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;geomeTRIC&#39;</span><span class="p">,</span><span class="s1">&#39;geometric&#39;</span><span class="p">),(</span><span class="s1">&#39;PyBerny&#39;</span><span class="p">,</span> <span class="s1">&#39;pyberny&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;geometric&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Geometry Optimizer&quot;</span><span class="p">,</span>
@@ -423,7 +612,94 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="n">confirm_classical_settings</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Run Classical Calculation&quot;</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
                                   <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
-<span class="c1"># For step 3</span>
+<span class="c1"># Widget Logic and Program Logic</span>
+
+<span class="k">def</span> <span class="nf">classical_settings_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="n">end_step_2</span><span class="p">()</span> <span class="c1"># at the beginning as user should not be able to change anything once calculation starts</span>
+    <span class="k">global</span> <span class="n">mol</span>
+    <span class="k">global</span> <span class="n">conv_params</span>
+    <span class="k">global</span> <span class="n">mf</span>
+    <span class="k">global</span> <span class="n">es_data</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">select_basis</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">spin</span>  <span class="o">=</span> <span class="n">select_spin</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">symmetry</span> <span class="o">=</span> <span class="n">select_symmetry</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">select_charge</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Minimal&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Optimal&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Full&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}[</span><span class="n">select_verbosity</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;tight&quot;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">][</span><span class="n">criteria</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_convergence_widgets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;HF&#39;</span><span class="p">:</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">HF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span> <span class="c1"># mf stands for mean-field</span>
+        <span class="c1"># the mean-field object stores final converged ground-state energy, MO coefficients, occupations, etc. </span>
+    <span class="k">elif</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;RHF&#39;</span><span class="p">:</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">RHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;ROHF&#39;</span><span class="p">:</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">ROHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculating...&quot;</span>
+    <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">pyscf_screen_output</span><span class="p">:</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">geomoptimize</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="o">**</span><span class="n">conv_params</span><span class="p">)</span>
+    <span class="n">select_classical_screen_output</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># User has time till this point to show output on screen; can be helpful if PySCF is taking super long</span>
+    <span class="k">if</span> <span class="n">select_classical_screen_output</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">pyscf_out</span><span class="p">:</span>
+            <span class="n">pyscf_screen_output</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">mol</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="s2">&quot;molecule.xyz&quot;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span> <span class="c1"># final optimized geometry</span>
+    <span class="n">mf</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span> <span class="c1"># setup kernel again</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
+        <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_occ</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mo_occ</span><span class="p">)</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">mo_occ</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_unocc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mo_occ</span><span class="p">)</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_parocc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_unocc&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_elec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">nelec</span><span class="p">)</span>
+    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;elec_above_homo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_elec&#39;</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_unocc&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_parocc&#39;</span><span class="p">]</span>
+    <span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">max</span>   <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span>
+    <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;The classically calculated ground state energy of the system is: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">e_tot</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; hartree.&quot;</span>
+    <span class="n">classical_result_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;$Download$ $Result$ $File$:&quot;</span>
+    <span class="k">with</span> <span class="n">classical_result_link</span><span class="p">:</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">FileLink</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
+    <span class="n">plot_mo_diagram</span><span class="p">()</span>
+    <span class="n">mo_diag_header</span><span class="o">.</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;A partial Molecular Occupation diagram is below. Use it to guide selection of Active Space.&quot;</span>
+    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
+        <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">get_visual_mo_options</span><span class="p">()</span>
+        <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_occ&quot;</span><span class="p">]</span>
+        <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculation done, now generating visulization files.&quot;</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
+        <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">generate_cubefiles</span><span class="p">()</span>
+        <span class="n">select_visual</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">def</span> <span class="nf">end_step_2</span><span class="p">():</span>
+    <span class="n">select_basis</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_spin</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_symmetry</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_charge</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_method</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select_geooptimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">get_custom_settings</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">select_verbosity</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="c1"># Disable if output was asked for</span>
+        <span class="n">select_verbosity</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">proceed_to_quantum</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># For Step 3 : Visual analysis, no calculations other than computation of cube files if required</span>
+
+<span class="c1"># 3D viewer : Logic and Widgets</span>
 
 <span class="n">subtitle3</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">+</span><span class="s2">&quot;Analyze Classical Results&quot;</span><span class="o">+</span><span class="n">hend</span><span class="p">)</span>
 
@@ -442,7 +718,15 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="n">download_view3D</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;download view&quot;</span><span class="p">,</span> <span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                      <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
-<span class="n">select_visual_mo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MO number&quot;</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">get_visual_mo_options</span><span class="p">():</span>
+    <span class="n">homos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HOMO&quot;</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="s2">&quot;HOMO-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">homos</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">homos</span><span class="p">[</span><span class="o">-</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_occ&quot;</span><span class="p">]:]</span><span class="o">+</span><span class="p">[</span><span class="s2">&quot;LUMO&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)):</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;LUMO+&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,(</span><span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">)))</span>
+
+<span class="n">select_visual_mo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">SelectionSlider</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Select MO: &quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;HOMO&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                                      <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
 
 <span class="n">iso_properties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;isoval&#39;</span><span class="p">:</span>  <span class="mf">0.03</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s1">&#39;opacity&#39;</span><span class="p">:</span><span class="mf">0.5</span><span class="p">}</span>
@@ -459,142 +743,18 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="n">select_color_neg</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ColorPicker</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot; − &quot;</span><span class="p">,</span> <span class="n">concise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;10%&quot;</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">freeze_surface3d</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="n">set_isovalue</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="n">select_color_pos</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="n">select_color_neg</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="n">set_opacity</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="n">redraw_view</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
-        
 <span class="n">visualization</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">select_visual</span><span class="p">,</span> <span class="n">download_view3D</span><span class="p">,</span> <span class="n">redraw_view</span><span class="p">],</span>
                                                     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">)),</span>
                                        <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">select_visual_mo</span><span class="p">]),</span>
                                        <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">set_isovalue</span><span class="p">,</span> <span class="n">select_color_pos</span><span class="p">,</span> <span class="n">select_color_neg</span><span class="p">,</span> <span class="n">set_opacity</span><span class="p">],</span>
                                                     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))])</span>
 
-<span class="n">classical_result_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="n">classical_result_link</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
-<span class="n">download_classical_result</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">classical_result_label</span><span class="p">,</span> <span class="n">classical_result_link</span><span class="p">],</span>
-                                        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
-
-<span class="n">mo_diag_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Molecular Occupation for the molecule. Use this for selection of Active Space.&quot;</span><span class="p">)</span>
-<span class="n">mo_diag_view</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
-
-<span class="c1"># All button switching logic</span>
-
-<span class="c1"># For Step 1</span>
-
-<span class="k">def</span> <span class="nf">file_picker_switch</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c1"># Only allow file upload if option is chosen</span>
-    <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">stored_geometries</span><span class="p">:</span>
-        <span class="k">global</span> <span class="n">mol</span>
-        <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">stored_geometries</span><span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]]</span>
-        <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Use &quot;</span><span class="o">+</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; molecule&quot;</span>
-        <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">elif</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Upload own file&#39;</span><span class="p">:</span>
-        <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="c1"># in case a file was picked previously</span>
-            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Upload &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Pick an .xyz or .mol file&quot;</span>
-            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-
-<span class="k">def</span> <span class="nf">upload_button_used</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c1"># Rename upload button to show picked filename</span>
-    <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span><span class="s2">&quot;mol&quot;</span><span class="p">]:</span>
-            <span class="n">file_upload</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Upload &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Use my file: &quot;</span><span class="o">+</span><span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Please pick an .xyz or .mol file&quot;</span>
-
-<span class="k">def</span> <span class="nf">convert_to_atom_data</span><span class="p">(</span><span class="n">molecule_file</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">molecule_file</span> <span class="o">==</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You shouldn&#39;t get this message&quot;</span><span class="p">)</span> <span class="c1"># kind of assertion check</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span><span class="n">file_upload</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-    <span class="n">kind</span> <span class="o">=</span> <span class="n">molecule_file</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
-    <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">mol_line_decompose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span> <span class="p">:</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
-    <span class="n">xyz_line_decompose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span> <span class="p">:</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])]</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;mol&quot;</span><span class="p">:</span>
-            <span class="c1"># num of atoms are mentioned on line 3, atomic data starts from line 4, counting starts from zeroth line</span>
-            <span class="n">number_of_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">begin_line_number</span> <span class="o">=</span> <span class="mi">4</span>
-            <span class="n">line_decompose</span> <span class="o">=</span> <span class="n">mol_line_decompose</span>
-        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;xyz&quot;</span><span class="p">:</span>
-            <span class="c1"># num of atoms are mentioned on line 0, atomic data starts from line 2, counting starts from zeroth line</span>
-            <span class="n">number_of_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">begin_line_number</span> <span class="o">=</span> <span class="mi">2</span>
-            <span class="n">line_decompose</span> <span class="o">=</span> <span class="n">xyz_line_decompose</span>
-        <span class="n">end_line_number</span> <span class="o">=</span> <span class="n">begin_line_number</span><span class="o">+</span><span class="n">number_of_atoms</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">begin_line_number</span><span class="p">:</span><span class="n">end_line_number</span><span class="p">]:</span>
-            <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line_decompose</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">error_occured</span><span class="p">(</span><span class="s2">&quot;Error understanding uploaded file. Use another.&lt;br&gt;Reload page to ensure fresh start!&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xyz</span>
-
-<span class="k">def</span> <span class="nf">start_step_2</span><span class="p">():</span>
-    <span class="n">file_picker</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
-    <span class="n">file_picker</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">file_upload</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
-    <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
-    <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">select_basis</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_spin</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_symmetry</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_charge</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_method</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_geooptimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_verbosity</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">select_classical_screen_output</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">get_custom_settings</span><span class="p">:</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">def</span> <span class="nf">file_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">mol</span>
-    <span class="n">temp_mol</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">temp_mol</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;tmp.output&quot;</span>
-    <span class="n">temp_mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span> 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">disabled</span><span class="p">:</span> <span class="c1"># i.e. a file was uploaded</span>
-        <span class="n">molecule_file</span> <span class="o">=</span> <span class="p">((</span><span class="n">file_upload</span><span class="o">.</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;Upload&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">molecule_file</span> <span class="o">==</span> <span class="n">file_upload</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You shouldn&#39;t get this message&quot;</span><span class="p">)</span> <span class="c1"># kind of assertion check</span>
-        <span class="n">temp_mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">convert_to_atom_data</span><span class="p">(</span><span class="n">molecule_file</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">molecule_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_picker</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.xyz&quot;</span>
-    <span class="k">try</span><span class="p">:</span> <span class="c1"># to check validity of uploaded geometry / included geometry and to generate xyz for 3D view</span>
-        <span class="n">temp_mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">temp_mol</span><span class="o">.</span><span class="n">atom</span> <span class="c1"># because build was a success</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">error_occured</span><span class="p">(</span><span class="s2">&quot;Error understanding uploaded file. Use another.&lt;br&gt;Reload page to ensure fresh start!&quot;</span><span class="p">)</span>
-    <span class="n">temp_mol</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span> <span class="c1"># for temporary geometry</span>
-    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;given_molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-    <span class="k">del</span> <span class="n">temp_mol</span>
-    <span class="n">start_step_2</span><span class="p">()</span>
-
-<span class="c1"># For Step 2</span>
-
-<span class="k">def</span> <span class="nf">start_step_3</span><span class="p">():</span>
-    <span class="n">select_basis</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">select_spin</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">select_symmetry</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">select_charge</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">select_method</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">select_geooptimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">get_custom_settings</span><span class="p">:</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
-    <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">select_verbosity</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="c1"># Disable if output was asked for</span>
-        <span class="n">select_verbosity</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">def</span> <span class="nf">freeze_surface3d</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">set_isovalue</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_color_pos</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_color_neg</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">set_opacity</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">redraw_view</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
 
 <span class="k">def</span> <span class="nf">visual_switched</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="n">download_view3D</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
@@ -635,7 +795,7 @@ To enable visualizations, you download the notebook and set <code class="docutil
         <span class="n">set_opacity</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">iso_properties</span><span class="p">[</span><span class="s1">&#39;opacity&#39;</span><span class="p">]</span>
         <span class="n">select_color_pos</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">iso_properties</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
         <span class="n">select_color_neg</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">iso_properties_neg_color</span>
-
+        
 <span class="k">def</span> <span class="nf">mo_changed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
     <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">redraw_view</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;loading...&quot;</span>
@@ -653,130 +813,6 @@ To enable visualizations, you download the notebook and set <code class="docutil
     <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">freeze_surface3d</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">generate_cubefiles</span><span class="p">():</span>
-    <span class="n">pyscf</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">cubegen</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;electron_density.cube&quot;</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">make_rdm1</span><span class="p">())</span> <span class="c1"># create electron density</span>
-    <span class="k">for</span> <span class="n">mo_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]):</span>
-        <span class="n">pyscf</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">cubegen</span><span class="o">.</span><span class="n">orbital</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;orb_num_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mo_level</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.cube&quot;</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">[:,</span><span class="n">mo_level</span><span class="p">])</span>
-    <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">plot_mo_diagram</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">es_data</span>
-    <span class="n">degeneracy_threshold</span> <span class="o">=</span> <span class="mf">0.2</span>
-    <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
-        <span class="n">mo_energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_energy</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mo_energy</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_energy</span>
-    <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">mo_energy</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">degeneracy_threshold</span><span class="p">:</span>
-            <span class="n">levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
-            <span class="k">continue</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
-    <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[:]</span> <span class="c1"># deep copy</span>
-
-    <span class="c1"># separate into filled and unfilled</span>
-    <span class="n">plot_filled</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">counted_mo</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">counted_mo</span> <span class="o">&lt;</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]:</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">levels</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">counted_mo</span> <span class="o">+=</span> <span class="n">_</span>
-        <span class="n">plot_filled</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
-    <span class="n">plot_unfilled</span> <span class="o">=</span> <span class="n">levels</span>
-
-    <span class="c1"># setup labels and separation</span>
-    <span class="n">plot_energy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="c1">#energy from -5 to 20, basically determines separation</span>
-    <span class="n">mo_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HOMO-1&quot;</span><span class="p">,</span> <span class="s2">&quot;HOMO&quot;</span><span class="p">,</span> <span class="s2">&quot;LUMO&quot;</span><span class="p">,</span><span class="s2">&quot;LUMO+1&quot;</span><span class="p">,</span><span class="s2">&quot;LUMO+2&quot;</span><span class="p">,</span><span class="s2">&quot;LUMO+3&quot;</span><span class="p">]</span>
-
-    <span class="c1"># plot from HOMO-1 to LUMO+3 (or less)</span>
-    <span class="n">fig_height</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span>
-    <span class="k">if</span> <span class="n">fig_height</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
-        <span class="n">fig_height</span> <span class="o">=</span> <span class="mi">12</span>
-    <span class="n">fig_width</span>  <span class="o">=</span> <span class="mi">6</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;mo_degeneracy&quot;</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.spines.left&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.left&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.labelcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
-    <span class="n">mo_diagram</span> <span class="o">=</span> <span class="n">ED</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="c1"># for HOMO-1 and HOMO</span>
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_level</span><span class="p">(</span><span class="n">plot_energy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mo_labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_electronbox</span><span class="p">(</span><span class="n">level_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">plot_filled</span><span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">plot_filled</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="p">)],</span> <span class="n">electrons</span><span class="o">=</span><span class="p">(</span><span class="n">plot_filled</span><span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">plot_filled</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="p">)])</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">spacing_f</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plot_unfilled</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="c1"># for all the LUMOs</span>
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_level</span><span class="p">(</span><span class="n">plot_energy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mo_labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_electronbox</span><span class="p">(</span><span class="n">level_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">plot_unfilled</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">electrons</span><span class="o">=</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;elec_above_homo&quot;</span><span class="p">],</span> <span class="n">side</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">spacing_f</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">mo_diagram</span><span class="o">.</span><span class="n">add_electronbox</span><span class="p">(</span><span class="n">level_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">plot_unfilled</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">electrons</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">spacing_f</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">break</span> <span class="c1"># break after reaching (and printing) to LUMO+1; can be easily modified to print all LUMOs</span>
-    <span class="n">mo_diagram</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.7</span>
-    <span class="k">with</span> <span class="n">mo_diag_view</span><span class="p">:</span>
-        <span class="n">mo_diagram</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    
-<span class="k">def</span> <span class="nf">classical_settings_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
-    <span class="n">start_step_3</span><span class="p">()</span>
-    <span class="k">global</span> <span class="n">mol</span>
-    <span class="k">global</span> <span class="n">conv_params</span>
-    <span class="k">global</span> <span class="n">mf</span>
-    <span class="k">global</span> <span class="n">es_data</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">select_basis</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">spin</span>  <span class="o">=</span> <span class="n">select_spin</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">symmetry</span> <span class="o">=</span> <span class="n">select_symmetry</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">select_charge</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Minimal&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Optimal&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Full&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}[</span><span class="n">select_verbosity</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;tight&quot;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">select_conv_params</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">][</span><span class="n">criteria</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_convergence_widgets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-        <span class="n">conv_params</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;HF&#39;</span><span class="p">:</span>
-        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">HF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span> <span class="c1"># mf stands for mean-field</span>
-        <span class="c1"># the mean-field object stores final converged ground-state energy, MO coefficients, occupations, etc. </span>
-    <span class="k">elif</span> <span class="n">select_method</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;KS&#39;</span><span class="p">:</span>
-        <span class="n">mf</span> <span class="o">=</span> <span class="n">pyscf</span><span class="o">.</span><span class="n">scf</span><span class="o">.</span><span class="n">KS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-        <span class="n">mf</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;pbe&quot;</span>
-    <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculating...&quot;</span>
-    <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">pyscf_screen_output</span><span class="p">:</span>
-        <span class="n">mol</span> <span class="o">=</span> <span class="n">geomoptimize</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="o">**</span><span class="n">conv_params</span><span class="p">)</span>
-    <span class="n">select_classical_screen_output</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">select_classical_screen_output</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">pyscf_out</span><span class="p">:</span>
-            <span class="n">pyscf_screen_output</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    <span class="n">mol</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="s2">&quot;molecule.xyz&quot;</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span> <span class="c1"># final optimized geometry</span>
-    <span class="n">mf</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span> <span class="c1"># setup kernel again</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_energy</span><span class="p">)</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="k">else</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
-        <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_occ</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">mo_occ</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_unocc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mo_occ</span><span class="p">)</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_parocc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_mo&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_unocc&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_elec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">nelec</span><span class="p">)</span>
-    <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;elec_above_homo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_elec&#39;</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;num_of_occ&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
-        <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Calculation done, now generating visulization files.&quot;</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllModels</span><span class="p">()</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">removeAllShapes</span><span class="p">()</span> <span class="c1"># just to be sure</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;molecule.xyz&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}})</span>
-        <span class="n">p3Dw</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        <span class="n">generate_cubefiles</span><span class="p">()</span>
-        <span class="n">select_visual</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">classical_energy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;The classically calculated ground state energy of the system is: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">e_tot</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; hartree.&quot;</span>
-    <span class="n">classical_result_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;$Download$ $Result$ $File$:&quot;</span>
-    <span class="k">with</span> <span class="n">classical_result_link</span><span class="p">:</span>
-        <span class="n">display</span><span class="p">(</span><span class="n">FileLink</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
-    <span class="n">plot_mo_diagram</span><span class="p">()</span>
-
-<span class="c1"># For Step 3</span>
-
 <span class="k">def</span> <span class="nf">isovalue_setter</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
     <span class="n">iso_properties</span><span class="p">[</span><span class="s1">&#39;isoval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_isovalue</span><span class="o">.</span><span class="n">value</span>
         
@@ -792,22 +828,245 @@ To enable visualizations, you download the notebook and set <code class="docutil
 <span class="k">def</span> <span class="nf">download_view</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
     <span class="n">p3Dw</span><span class="o">.</span><span class="n">png</span><span class="p">()</span>
 
+<span class="c1"># Widgets (for Step 3) (other than 3D viewer)</span>
+
+<span class="n">classical_result_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">classical_result_link</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
+
+<span class="n">download_classical_result</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">classical_result_label</span><span class="p">,</span> <span class="n">classical_result_link</span><span class="p">],</span>
+                                        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">mo_diag_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">mo_diag_view</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
+
+<span class="c1"># Quantum Part</span>
+
+<span class="c1"># imports for Quantum calculator</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_nature.drivers</span> <span class="kn">import</span> <span class="n">PySCFDriver</span><span class="p">,</span> <span class="n">UnitsType</span><span class="p">,</span> <span class="n">HFMethodType</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.drivers</span> <span class="kn">import</span> <span class="n">Molecule</span> <span class="k">as</span> <span class="n">QMolecule</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.problems.second_quantization.electronic</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.transformers</span> <span class="kn">import</span> <span class="n">ActiveSpaceTransformer</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.converters.second_quantization.qubit_converter</span> <span class="kn">import</span> <span class="n">QubitConverter</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.mappers.second_quantization</span> <span class="kn">import</span> <span class="n">BravyiKitaevMapper</span><span class="p">,</span> <span class="n">JordanWignerMapper</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.circuit.library</span> <span class="kn">import</span> <span class="n">HartreeFock</span><span class="p">,</span> <span class="n">UCCSD</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">EfficientSU2</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.ground_state_solvers.minimum_eigensolver_factories</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolverFactory</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.algorithms.ground_state_solvers</span> <span class="kn">import</span> <span class="n">GroundStateEigensolver</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms</span> <span class="kn">import</span> <span class="n">optimizers</span><span class="p">,</span> <span class="n">VQE</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">Aer</span>
+
+<span class="c1"># widgets</span>
+
+<span class="n">subtitle4</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">hbegin</span><span class="o">+</span><span class="s2">&quot;Setup Quantum Calculation&quot;</span><span class="o">+</span><span class="n">hend</span><span class="p">)</span>
+
+<span class="n">quantum_status</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">proceed_to_quantum</span>  <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start Quantum Calculation&quot;</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_num_unocc_mo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;# of Unoccupied MO for AS&quot;</span><span class="p">,</span>   <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_num_occ_mo</span>   <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;# of Occupied MO for AS&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">describe_AS</span>         <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">select_mapper</span>       <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Jordan-Wigner&quot;</span><span class="p">,</span><span class="s2">&quot;Bravyi-Kitaev&quot;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Jordan-Wigner&quot;</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Parity Mapper&quot;</span><span class="p">,</span>
+                                       <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_two_qubit_reduction</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="kc">False</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                   <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use Two Qubit Reduction&quot;</span><span class="p">,</span>
+                                                   <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_ansatz</span>       <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Physically Motivated (UCCSD)&quot;</span><span class="p">,</span><span class="s1">&#39;UCCSD&#39;</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="s2">&quot;Heuristic (Efficient SU2)&quot;</span><span class="p">,</span><span class="s1">&#39;ESU2&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="s2">&quot;UCCSD&quot;</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Ansatz&quot;</span><span class="p">,</span>
+                                       <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_backend</span>      <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;IBM Simulator&quot;</span><span class="p">,</span><span class="s1">&#39;sv_simul&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="s2">&quot;sv_simul&quot;</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Select your Quantum Computer&quot;</span><span class="p">,</span>
+                                       <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_optimizer</span>    <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;COBYLA&#39;</span><span class="p">,</span> <span class="s1">&#39;L_BFGS_B&#39;</span><span class="p">,</span> <span class="s1">&#39;SLSQP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPSA&#39;</span><span class="p">],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="s2">&quot;L_BFGS_B&quot;</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Optimizer&quot;</span><span class="p">,</span>
+                                       <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">select_solver</span>       <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Classical solver&quot;</span><span class="p">,</span><span class="s1">&#39;numpy&#39;</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="s2">&quot;VQE&quot;</span><span class="p">,</span><span class="s1">&#39;vqe&#39;</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="s2">&quot;Classical and VQE&quot;</span><span class="p">,</span><span class="s1">&#39;both&#39;</span><span class="p">)],</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Solver&quot;</span><span class="p">,</span>
+                                       <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+<span class="n">confirm_quantum_settings</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Confirm Quantum Calculation Options&quot;</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
+                                          <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">default_selection_width</span><span class="p">))</span>
+
+<span class="n">quantum_output</span>      <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">deactivate_quantum_options</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_mapper</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_two_qubit_reduction</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_ansatz</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_backend</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_optimizer</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">select_solver</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">confirm_quantum_settings</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span> <span class="c1"># i.e. the setup is activated</span>
+        <span class="n">changed_AS</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    
+<span class="k">def</span> <span class="nf">changed_AS</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="n">nelec</span> <span class="o">=</span> <span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="n">es_data</span><span class="p">[</span><span class="s2">&quot;num_of_parocc&quot;</span><span class="p">]</span>
+    <span class="n">nocc</span>  <span class="o">=</span> <span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">nunocc</span>  <span class="o">=</span> <span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">describe_AS</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Current AS selection has &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nelec</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; electrons and would require as many qubits.&quot;</span>
+
+<span class="c1"># Setup Calculation</span>
+
+<span class="k">global</span> <span class="n">qmol</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">exact_result</span><span class="p">,</span> <span class="n">vqe_result</span>
+<span class="n">exact_result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">vqe_result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># some quantum variables are global otherwise there is a lot of passing around</span>
+
+<span class="k">def</span> <span class="nf">setup_quantum</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="n">proceed_to_quantum</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">proceed_to_quantum</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">quantum_status</span><span class="o">.</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Building quantum molecule&quot;</span>
+    <span class="k">global</span> <span class="n">qmol</span><span class="p">,</span> <span class="n">driver</span>
+    <span class="n">picked_HF</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;HF&#39;</span><span class="p">:</span><span class="n">HFMethodType</span><span class="o">.</span><span class="n">UHF</span><span class="p">,</span>
+                 <span class="s1">&#39;RHF&#39;</span><span class="p">:</span><span class="n">HFMethodType</span><span class="o">.</span><span class="n">RHF</span><span class="p">,</span>
+                 <span class="s1">&#39;ROHF&#39;</span><span class="p">:</span><span class="n">HFMethodType</span><span class="o">.</span><span class="n">ROHF</span><span class="p">}[</span><span class="n">select_method</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+    <span class="n">qmol</span>          <span class="o">=</span> <span class="n">QMolecule</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atom</span><span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">)</span>
+    <span class="n">driver</span>        <span class="o">=</span> <span class="n">PySCFDriver</span><span class="p">(</span><span class="n">molecule</span><span class="o">=</span><span class="n">qmol</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">UnitsType</span><span class="o">.</span><span class="n">BOHR</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">basis</span><span class="p">,</span> <span class="n">hf_method</span><span class="o">=</span><span class="n">HFMethodType</span><span class="o">.</span><span class="n">RHF</span><span class="p">)</span>
+    <span class="n">qmol</span>      <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">quantum_status</span><span class="o">.</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Qmolecule built. Select calculation options&quot;</span>
+    <span class="n">deactivate_quantum_options</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    
+<span class="k">def</span> <span class="nf">quantum_settings_confirmed</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">qmol</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">exact_result</span><span class="p">,</span> <span class="n">vqe_result</span>
+    <span class="n">deactivate_quantum_options</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">confirm_quantum_settings</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">unobserve_all</span><span class="p">()</span>
+    <span class="n">quantum_status</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Starting calculation&quot;</span>
+    <span class="n">num_electrons_AS</span> <span class="o">=</span> <span class="p">(</span><span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;elec_above_homo&#39;</span><span class="p">]:</span> <span class="c1"># all above homo have to be included</span>
+        <span class="n">num_electrons_AS</span> <span class="o">+=</span> <span class="n">es_data</span><span class="p">[</span><span class="s1">&#39;elec_above_homo&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num_electrons_AS</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">tup_len</span> <span class="o">=</span>  <span class="n">num_electrons_AS</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">num_electrons_AS</span> <span class="o">=</span> <span class="p">((</span><span class="n">tup_len</span><span class="o">+</span><span class="mi">1</span><span class="p">),(</span><span class="n">tup_len</span><span class="p">))</span>
+    <span class="n">active_space</span>  <span class="o">=</span> <span class="n">ActiveSpaceTransformer</span><span class="p">(</span><span class="n">num_electrons</span><span class="o">=</span><span class="n">num_electrons_AS</span><span class="p">,</span>
+                                           <span class="n">num_molecular_orbitals</span><span class="o">=</span><span class="p">(</span><span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">value</span><span class="o">+</span><span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+    <span class="n">es_problem</span>    <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">q_molecule_transformers</span><span class="o">=</span><span class="p">[</span><span class="n">active_space</span><span class="p">])</span>
+    <span class="n">second_q_ops</span>  <span class="o">=</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()</span>
+    <span class="n">main_op</span>       <span class="o">=</span> <span class="n">second_q_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># just the hamiltonian (energy)</span>
+    <span class="k">if</span> <span class="n">select_mapper</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;Jordan-Wigner&quot;</span><span class="p">:</span>
+        <span class="n">mapper</span>    <span class="o">=</span> <span class="n">JordanWignerMapper</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">select_mapper</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;Bravyi-Kitaev&quot;</span><span class="p">:</span>
+        <span class="n">mapper</span>    <span class="o">=</span> <span class="n">BravyiKitaevMapper</span><span class="p">()</span>
+    <span class="n">converter</span>     <span class="o">=</span> <span class="n">QubitConverter</span><span class="p">(</span><span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span> <span class="n">two_qubit_reduction</span><span class="o">=</span><span class="n">select_two_qubit_reduction</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_alpha</span><span class="p">,</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_beta</span><span class="p">)</span>
+    <span class="n">qubit_op</span>      <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">main_op</span><span class="p">,</span> <span class="n">num_particles</span><span class="o">=</span><span class="n">num_particles</span><span class="p">)</span>
+    <span class="n">num_spin_orbitals</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">es_problem</span><span class="o">.</span><span class="n">molecule_data_transformed</span><span class="o">.</span><span class="n">num_molecular_orbitals</span>
+    <span class="k">if</span> <span class="n">select_ansatz</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;UCCSD&quot;</span><span class="p">:</span>
+        <span class="n">init_state</span> <span class="o">=</span> <span class="n">HartreeFock</span><span class="p">(</span><span class="n">num_spin_orbitals</span><span class="p">,</span> <span class="n">num_particles</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+        <span class="n">ansatz</span>     <span class="o">=</span> <span class="n">UCCSD</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">num_particles</span><span class="p">,</span> <span class="n">num_spin_orbitals</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="n">init_state</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">select_ansatz</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;ESU2&quot;</span><span class="p">:</span>
+        <span class="n">ansatz</span> <span class="o">=</span> <span class="n">EfficientSU2</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="n">qubit_op</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">insert_barriers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">qinit</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">select_ansatz</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;UCCSD&quot;</span><span class="p">:</span>        
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Initial State</span><span class="se">\</span>
+<span class="s2">                     </span><span class="se">\n</span><span class="s2">=============&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">init_state</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Ansatz</span><span class="se">\</span>
+<span class="s2">                 </span><span class="se">\n</span><span class="s2">======&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ansatz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">select_backend</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;sv_simul&quot;</span><span class="p">:</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">)</span>
+    <span class="c1"># You may want to tune the parameters of each optimizer if you download the notebook,</span>
+    <span class="c1"># for the GUI these the defaults are used:</span>
+    <span class="k">if</span> <span class="n">select_optimizer</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;COBYLA&#39;</span><span class="p">:</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizers</span><span class="o">.</span><span class="n">COBYLA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">select_optimizer</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;L_BFGS_B&#39;</span><span class="p">:</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizers</span><span class="o">.</span><span class="n">L_BFGS_B</span><span class="p">(</span><span class="n">maxfun</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">select_optimizer</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;SPSA&#39;</span><span class="p">:</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizers</span><span class="o">.</span><span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">select_optimizer</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;SLSQP&#39;</span><span class="p">:</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizers</span><span class="o">.</span><span class="n">SLSQP</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">select_solver</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span> <span class="ow">or</span> <span class="n">select_solver</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+        <span class="n">quantum_status</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Solving using classical solver&quot;</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolverFactory</span><span class="p">()</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="n">GroundStateEigensolver</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">solver</span><span class="p">)</span>
+        <span class="n">exact_result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">es_problem</span><span class="p">)</span>
+        <span class="n">exact_energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">exact_result</span><span class="o">.</span><span class="n">eigenenergies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">qout_result_1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Result from the classical/exact solver follow:</span><span class="se">\</span>
+<span class="s2">                     </span><span class="se">\n</span><span class="s2">==============================================&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">exact_result</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">qout_result_1</span><span class="p">:</span>
+             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Classical/exact solver not used.&quot;</span><span class="p">)</span>
+            
+
+    <span class="k">if</span> <span class="n">select_solver</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;vqe&quot;</span> <span class="ow">or</span> <span class="n">select_solver</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">ordered_parameters</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">initial_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">]</span> <span class="o">*</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span>
+        <span class="n">quantum_status</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Solving using VQE solver&quot;</span>
+        <span class="n">algorithm</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span>
+                        <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                        <span class="n">quantum_instance</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+                        <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+        <span class="n">vqe_result</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubit_op</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">qout_result_2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Result from the VQE Solver follow:</span><span class="se">\</span>
+<span class="s2">                     </span><span class="se">\n</span><span class="s2">=================================&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">vqe_result</span><span class="p">)</span>
+        <span class="n">vqe_energy</span> <span class="o">=</span> <span class="n">vqe_result</span><span class="o">.</span><span class="n">eigenvalue</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">capture_output</span><span class="p">()</span> <span class="k">as</span> <span class="n">qout_result_2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">VQE solver not used.&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">quantum_output</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Energy component from Active State is:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exact_result</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exact solver: &quot;</span><span class="p">,</span><span class="n">exact_result</span><span class="o">.</span><span class="n">computed_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">vqe_result</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;VQE solver:   &quot;</span><span class="p">,</span><span class="n">vqe_result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exact_result</span> <span class="ow">and</span> <span class="n">vqe_result</span> <span class="ow">and</span> <span class="n">select_backend</span><span class="o">.</span><span class="n">value</span><span class="o">==</span><span class="s2">&quot;sv_simul&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Don&#39;t be surprised that they are similar: we have used a simulator :)&quot;</span><span class="p">)</span>
+        <span class="n">qout_result_1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">qout_result_2</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">qinit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
 <span class="c1"># Observers</span>
 
 <span class="n">file_picker</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">file_picker_switch</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="c1"># Monitor option chosen by file picker</span>
 <span class="n">file_upload</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">upload_button_used</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="c1"># Monitor which file was picked</span>
 <span class="n">confirm_file_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">file_confirmed</span><span class="p">)</span> <span class="c1"># To move to step 2</span>
 <span class="n">confirm_classical_settings</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">classical_settings_confirmed</span><span class="p">)</span> <span class="c1"># To move to step 3</span>
+<span class="c1"># ^^^ Unobserved at end of Step 1</span>
 
 <span class="n">select_visual</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">visual_switched</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 <span class="n">redraw_view</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">visual_switched_coz_redraw</span><span class="p">)</span> <span class="c1"># Monitor charge density or MO toggle</span>
 <span class="n">select_visual_mo</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mo_changed</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="c1"># to set the MO in the visualization</span>
-
 <span class="n">set_isovalue</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">isovalue_setter</span><span class="p">)</span>
 <span class="n">set_opacity</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">opacity_setter</span><span class="p">)</span>
 <span class="n">select_color_pos</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">pos_color_setter</span><span class="p">)</span>
 <span class="n">select_color_neg</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">neg_color_setter</span><span class="p">)</span>
 <span class="n">download_view3D</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">download_view</span><span class="p">)</span>
+<span class="c1"># ^^^ We never unoberve these as they constitute output</span>
+
+<span class="n">proceed_to_quantum</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">setup_quantum</span><span class="p">)</span>
+<span class="n">select_num_unocc_mo</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">changed_AS</span><span class="p">)</span>
+<span class="n">select_num_occ_mo</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">changed_AS</span><span class="p">)</span>
+<span class="n">confirm_quantum_settings</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">quantum_settings_confirmed</span><span class="p">)</span>
+
 
 <span class="c1"># Build the full widget</span>
 <span class="n">calculator1</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">titlebar</span><span class="p">,</span>
@@ -818,26 +1077,43 @@ To enable visualizations, you download the notebook and set <code class="docutil
                                     <span class="n">select_method</span><span class="p">,</span> <span class="n">select_geooptimizer</span><span class="p">,</span>
                                     <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;$Convergence$ $settings $&quot;</span><span class="p">),</span>
                                     <span class="n">select_conv_params</span><span class="p">,</span> <span class="n">classical_output</span><span class="p">,</span> <span class="n">confirm_classical_settings</span><span class="p">,</span>
-                                    <span class="n">subtitle3</span><span class="p">,</span> <span class="n">classical_energy</span><span class="p">,</span> <span class="n">download_classical_result</span><span class="p">])</span>
+                                    <span class="n">subtitle3</span><span class="p">,</span> <span class="n">classical_energy</span><span class="p">,</span> <span class="n">download_classical_result</span><span class="p">,</span>
+                                    <span class="n">mo_diag_header</span><span class="p">,</span> <span class="n">mo_diag_view</span><span class="p">])</span>
 
 
 <span class="n">calculator2_children</span>  <span class="o">=</span> <span class="p">[</span><span class="n">visualization</span><span class="p">]</span> <span class="k">if</span> <span class="n">visual</span> <span class="k">else</span> <span class="p">[]</span>
-<span class="n">calculator2_children</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mo_diag_header</span><span class="p">,</span> <span class="n">mo_diag_view</span><span class="p">,</span> <span class="n">errorbar</span><span class="p">,</span> <span class="n">pyscf_out</span><span class="p">]</span>
+<span class="n">calculator2_children</span> <span class="o">+=</span> <span class="p">[</span><span class="n">subtitle4</span><span class="p">,</span> <span class="n">quantum_status</span><span class="p">,</span> <span class="n">proceed_to_quantum</span><span class="p">,</span>
+                         <span class="n">select_num_unocc_mo</span><span class="p">,</span> <span class="n">select_num_occ_mo</span><span class="p">,</span> <span class="n">describe_AS</span><span class="p">,</span>
+                         <span class="n">select_mapper</span><span class="p">,</span> <span class="n">select_two_qubit_reduction</span><span class="p">,</span> <span class="n">select_ansatz</span><span class="p">,</span>
+                         <span class="n">select_backend</span><span class="p">,</span> <span class="n">select_optimizer</span><span class="p">,</span> <span class="n">select_solver</span><span class="p">,</span> <span class="n">confirm_quantum_settings</span><span class="p">,</span>
+                         <span class="n">errorbar</span><span class="p">,</span> <span class="n">pyscf_out</span><span class="p">,</span> <span class="n">quantum_output</span><span class="p">]</span>
 
 <span class="n">calculator2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">calculator2_children</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell tag_thebe-init docutils container">
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">calculator1</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">visual</span><span class="p">:</span>
     <span class="n">p3Dw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">display</span><span class="p">(</span><span class="n">calculator2</span><span class="p">)</span>
+<span class="c1"># These global variables are available after full execution of the cells and may be used for further exploration</span>
+<span class="c1"># in the downloaded version of this notebook.</span>
+<span class="c1">#  - mol, mf (classical PySCF molecule and it&#39;s &#39;mean field&#39; object)</span>
+<span class="c1">#  - qmol (classical PySCF molecule used for quantum calculation)</span>
+<span class="c1">#  - exact_result (result from the exact solver, if used)</span>
+<span class="c1">#  - vqe_result (result from the vqe solver, if used)</span>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "595569fec8194df28f579f8916086263", "version_major": 2, "version_minor": 0}
+</script><script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "62493fbd8dfb455ca894dd77f726a44e", "version_major": 2, "version_minor": 0}
+</script></div>
 </div>
 </div>
 </div>
