@@ -16,7 +16,7 @@
 # However, the online backend we have embedded here at the moment is not powerful enough.  
 # To enable visualizations, you download the notebook and set `visual = True` to use the functionality.
 
-# In[1]:
+# In[ ]:
 
 
 # CODE BEGINS
@@ -186,12 +186,16 @@ def plot_mo_diagram():
     
     # plot from HOMO-1 to LUMO+3 (or less)
     homo_include = 2
-    if es_data["num_of_occ"] == 1:
+    if es_data["num_of_occ"] == 1 or es_data["num_of_occ"] == 0:
         homo_include = 1
+        mo_labels.pop(0)
     mo_diagram = ED()
     for i in range(homo_include): # for HOMO-1 and HOMO
         mo_diagram.add_level(plot_energy[i], mo_labels[i])
-        mo_diagram.add_electronbox(level_id=i, boxes=plot_filled[i-homo_include], electrons=(plot_filled[i-homo_include])*2, side=1.5, spacing_f=2.5)
+        if es_data["num_of_elec"] == 1:
+            mo_diagram.add_electronbox(level_id=i, boxes=1, electrons=1, side=1.5, spacing_f=2.5)
+        else:
+            mo_diagram.add_electronbox(level_id=i, boxes=plot_filled[i-homo_include], electrons=(plot_filled[i-homo_include])*2, side=1.5, spacing_f=2.5)
 
     for i in range(homo_include, len(plot_unfilled)+homo_include, 1): # for all the LUMOs
         mo_diagram.add_level(plot_energy[i], mo_labels[i])
@@ -397,7 +401,10 @@ def classical_settings_confirmed(_):
     mol.symmetry = select_symmetry.value
     mol.charge = select_charge.value
     mol.verbose = {"Minimal": 1, "Optimal": 3, "Full": 5}[select_verbosity.value]
-    mol.build()
+    try: # to check validity of uploaded geometry / included geometry and to generate xyz for 3D view
+        mol.build()
+    except:
+        error_occured("Error occured when building. Please check input sanity, especially spin configuration!")
     if select_conv_params.selected_index == 0:
         conv_params = conv_params["default"]
     elif select_conv_params.selected_index == 1:
@@ -419,6 +426,7 @@ def classical_settings_confirmed(_):
             mol = geomoptimize(mf, **conv_params)
         except:
             pass # eror will be printed on screen output
+    mf.kernel() # setup kernel again
     select_classical_screen_output.disabled = True
     if mf.e_tot == 0:
         # PySCF calculation has failed, therefore force screen output and exit
@@ -431,19 +439,29 @@ def classical_settings_confirmed(_):
         error_occured("PySCF calculation failed! Make sure that your input parameters were valid.")
         return
     mol.tofile("molecule.xyz",format="xyz") # final optimized geometry
-    mf.kernel() # setup kernel again
     es_data["spin"] = True if type(mf.mo_occ) is tuple else False
     if es_data["spin"]:
         mo_occ = np.sum(np.vstack(mf.mo_occ), axis=0)
     else:
         mo_occ = mf.mo_occ
     es_data["num_of_mo"] = len(mo_occ)
-    es_data['num_of_occ'] = int(np.sum(np.floor(mo_occ/2)))
-    es_data['num_of_unocc'] = es_data["num_of_mo"] - np.count_nonzero(mo_occ)
-    es_data['num_of_parocc'] = es_data["num_of_mo"] - es_data['num_of_unocc'] - es_data['num_of_occ']
     es_data['num_of_elec'] = sum(mol.nelec)
-    es_data['elec_above_homo'] = es_data['num_of_elec']-(es_data['num_of_occ']*2)
-    select_num_unocc_mo.max = es_data['num_of_unocc']+es_data['num_of_parocc']
+    if es_data['num_of_elec'] == 1:
+        es_data['num_of_occ'] = int(mf.mo_occ[0])
+        es_data['num_of_unocc'] = 0
+        es_data['num_of_parocc'] = int(mf.mo_occ[1])
+        es_data['elec_above_homo'] = int(mf.mo_occ[1])
+    else:
+        es_data['num_of_occ'] = int(np.sum(np.floor(mo_occ/2)))
+        es_data['num_of_unocc'] = es_data["num_of_mo"] - np.count_nonzero(mo_occ)
+        es_data['num_of_parocc'] = es_data["num_of_mo"] - es_data['num_of_unocc'] - es_data['num_of_occ']
+        es_data['elec_above_homo'] = es_data['num_of_elec']-(es_data['num_of_occ']*2)
+    if es_data['num_of_elec'] == 1:
+        select_num_unocc_mo.max = 1
+    else:
+        select_num_unocc_mo.max = es_data['num_of_unocc']+es_data['num_of_parocc']
+    if es_data['num_of_occ'] == 0:
+        select_num_occ_mo.min = 0
     select_num_occ_mo.max   = es_data['num_of_occ']
     classical_energy.value = "The classically calculated ground state energy of the system is: "+str(mf.e_tot)+" hartree."
     classical_result_label.value = "$Download$ $Result$ $File$:"
@@ -874,7 +892,7 @@ def run():
     display(calculator2)
 
 
-# In[2]:
+# In[ ]:
 
 
 run()
