@@ -25,7 +25,7 @@ visual = False
 
 import ipywidgets as widgets
 import pyscf, py3Dmol
-import pathlib, io
+import pathlib, io, time
 import numpy as np
 import matplotlib.pyplot as plt
 from pyscf.geomopt.geometric_solver import optimize as geomoptimize
@@ -101,6 +101,8 @@ pyscf_out = widgets.Output()
 def error_occured(error_message):
     errorbar.value = error_message
     exit()
+    time.sleep(10) # Give kernel time to exit
+    
 
 # For Step 1: Selecting a molecule
 
@@ -413,12 +415,21 @@ def classical_settings_confirmed(_):
         mf = pyscf.scf.ROHF(mol)
     classical_energy.value = "Calculating..."
     with capture_output() as pyscf_screen_output:
-        mol = geomoptimize(mf, **conv_params)
+        try:
+            mol = geomoptimize(mf, **conv_params)
+        except:
+            pass # eror will be printed on screen output
     select_classical_screen_output.disabled = True
+    if mf.e_tot == 0:
+        # PySCF calculation has failed, therefore force screen output and exit
+        select_classical_screen_output.value = True        
     # User has time till this point to show output on screen; can be helpful if PySCF is taking super long
     if select_classical_screen_output.value:
         with pyscf_out:
             pyscf_screen_output.show()
+    if mf.e_tot == 0:
+        error_occured("PySCF calculation failed! Make sure that your input parameters were valid.")
+        return
     mol.tofile("molecule.xyz",format="xyz") # final optimized geometry
     mf.kernel() # setup kernel again
     es_data["spin"] = True if type(mf.mo_occ) is tuple else False
@@ -440,6 +451,7 @@ def classical_settings_confirmed(_):
         display(FileLink(mol.output))
     plot_mo_diagram()
     mo_diag_header.value="A partial Molecular Occupation diagram is below. Use it to guide selection of Active Space."
+    proceed_to_quantum.disabled = False
     if visual:
         select_visual_mo.options = get_visual_mo_options()
         select_visual_mo.value = es_data["num_of_occ"]
@@ -465,7 +477,6 @@ def end_step_2():
     confirm_classical_settings.disabled = True
     if select_verbosity.value: # Disable if output was asked for
         select_verbosity.disabled = True
-    proceed_to_quantum.disabled = False
 
 # For Step 3 : Visual analysis, no calculations other than computation of cube files if required
 
